@@ -675,11 +675,11 @@ function initialiseParticleGlow(position)
 {
 	//create cylinders
 	for(var i=0;i<noOfCylinders;i++){
-		geoArray.push(new THREE.CylinderGeometry(0.02,0.02,Math.random()*5,4));
-		matArray.push(new THREE.MeshBasicMaterial({color:Math.random()*0xFFFFFF, transparent:true, opacity: 0.6}));
+		geoArray.push(new THREE.CylinderGeometry(0.02,0.02,Math.random()*4.9+0.1,4));
+		matArray.push(new THREE.MeshBasicMaterial({color:generateRandomColour(0x003DF1, 0x33C1FF), transparent:true, opacity: 0.6}));
 		
 		meshArray.push(new THREE.Mesh(geoArray[i], matArray[i]));
-		
+		//randomise position
 		meshArray[i].position.set(position.x + Math.random()*5-2.5, position.y + Math.random()*12.5, position.z + Math.random()*5-2.5);
 		
 		scene.add(meshArray[i]);
@@ -687,8 +687,8 @@ function initialiseParticleGlow(position)
 	
 	//create spheres
 	for(var i=0;i<noOfSpheres;i++){
-		sphGeoArray.push(new THREE.SphereGeometry(Math.random()*0.05,8,8));
-		sphMatArray.push(new THREE.MeshBasicMaterial({color: Math.random()*0xffffff, transparent:true, opacity: 0.7}));
+		sphGeoArray.push(new THREE.SphereGeometry(Math.random()*0.04+0.01,8,8));
+		sphMatArray.push(new THREE.MeshBasicMaterial({color: generateRandomColour(0x003DF1, 0x33C1FF),transparent:true, opacity: 0.7}));
 		
 		sphMeshArray.push(new THREE.Mesh(sphGeoArray[i], sphMatArray[i]));
 		//randomise position
@@ -717,9 +717,45 @@ function particleGlow(iFrame)
 	}
 }
 
+//Smoke
+var smokeArray = [];
+var noOfSmokeParts = 150;
+
+function initialiseSmoke(position){
+	for(var i=0;i<noOfSmokeParts;i++){
+		smokeArray.push(new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.5+0.1),new THREE.MeshPhongMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75})));
+		smokeArray[i].position.set(position.x + Math.random()*2-1, position.y + Math.random()*6-3, position.z + Math.random()*2-1);
+		scene.add(smokeArray[i]);
+	}
+}
+
+function particleSmoke(iFrame){
+	for(var i=0;i<noOfSmokeParts;i++){
+		if(smokeArray[i].position.y>6){
+			smokeArray[i].position.y = 0;
+		}
+		smokeArray[i].position.y += Math.random()*0.03+0.1;
+		smokeArray[i].rotation.x -= Math.random()*0.02;
+		smokeArray[i].rotation.y += Math.random()*0.1;
+		smokeArray[i].rotation.z += Math.random()*0.01;
+	}
+}
 /*
 END OF VFX
 */
+
+/*
+UTILITIES
+*/
+//generate a colour within a given range
+function generateRandomColour(difference, minValue){
+	return Math.random()*difference + minValue;
+}
+/*
+END OF UTILITIES
+*/
+
+initialiseSmoke(new THREE.Vector3(0,0,0));
 initialiseParticleGlow(new THREE.Vector3(0,0,0));
 
 var iFrame = 0;
@@ -741,6 +777,7 @@ function animate()
 	
 	//VFX
 	particleGlow(iFrame);
+	particleSmoke(iFrame);
 
     iFrame ++;
 
