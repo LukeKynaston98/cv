@@ -688,7 +688,7 @@ function initialiseParticleGlow(position)
 	//create spheres
 	for(var i=0;i<noOfSpheres;i++){
 		sphGeoArray.push(new THREE.SphereGeometry(Math.random()*0.05,8,8));
-		sphMatArray.push(new THREE.MeshBasicMaterial({color: Math.random()*0xFFFFFF, transparent:true, opacity: 0.7}));
+		sphMatArray.push(new THREE.MeshBasicMaterial({color: Math.random()*0xffffff, transparent:true, opacity: 0.7}));
 		
 		sphMeshArray.push(new THREE.Mesh(sphGeoArray[i], sphMatArray[i]));
 		//randomise position
@@ -737,7 +737,7 @@ function animate()
 	lightPositionVisualise.position.y = lightPoint1.position.y;
 	lightPositionVisualise.position.z = lightPoint1.position.z;
 
-	//shakeObjects(5);
+	shakeObjects(5);
 	
 	//VFX
 	particleGlow(iFrame);
