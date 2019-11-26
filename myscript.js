@@ -49,6 +49,8 @@ var wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
 wallMesh.position.set(0,20,-80);
 scene.add(wallMesh);
 
+var particleSystem = new ParticleSystem();
+
 /**
 FUNCTIONALITY
 **/
@@ -660,84 +662,219 @@ makeBook(new THREE.Vector3(4,4.5,-2), new THREE.Vector3(0,Math.PI/4,0));
 /*
 START OF VFX
 */
-var geoArray = [];
-	var matArray = [];
-	var meshArray = [];
-	var noOfCylinders = 50;
+//explosion
+/*
+var expArray = [];
+var noOfExpParts = 150;
+var expPos;
+
+function initialiseExplosion(position){
+	for(var i=0;i<noOfExpParts;i++){
+		var expMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.4+0.1), new THREE.MeshPhongMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
+		var particle = particleSystem.makeParticle(expMesh, Math.random()*3+2, new THREE.Vector3(Math.random()*0.06-0.03,Math.random()*0.06-0.03,Math.random()*0.06-0.03), new THREE.Vector3(Math.random()*1-0.5,Math.random()*0.5,Math.random()*1-0.5));
+		expArray.push(particle);
+		expArray[i].mesh.position.set(position.x,position.y,position.z);
+		scene.add(expArray[i].mesh);
+	}
 	
-	var sphGeoArray=[];
-	var sphMatArray=[];
-	var sphMeshArray=[];
-	var noOfSpheres = 100;
+	expPos = position;
+	particleExplosion();
+}
+
+function particleExplosion(){
+	requestAnimationFrame(particleExplosion);
+	
+	for(var i=0;i<noOfExpParts;i++){
+		if(expArray[i].lifetime<=0){
+			expArray[i].mesh.position.x = expPos.x;
+			expArray[i].mesh.position.y = expPos.y;
+			expArray[i].mesh.position.z = expPos.z;
+			expArray[i].lifetime = expArray[i].maxLifetime;
+		}
+		expArray[i].mesh.position.x += expArray[i].velocity.x;
+		expArray[i].mesh.position.y += expArray[i].velocity.y;
+		expArray[i].mesh.position.z += expArray[i].velocity.z;
+		
+		expArray[i].mesh.rotation.x += expArray[i].rotation.x;
+		expArray[i].mesh.rotation.y += expArray[i].rotation.y;
+		expArray[i].mesh.rotation.z += expArray[i].rotation.z;
+		
+		expArray[i].lifetime -= 0.1;
+	}
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+//smoke
+/*function initialiseSmoke(noOfParticles, position){
+	var tempArray = [];
+	
+	for(var i=0; i<noOfParticles;i++){
+		var smokeMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.5+0.1),new THREE.MeshPhongMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
+		//mesh,lifetime,rotation,speed
+		var particle = particleSystem.makeParticle(smokeMesh, Math.random()*5+2, new THREE.Vector3(Math.random()*0.06-0.03,Math.random()*0.06-0.03,Math.random()*0.06-0.03), new THREE.Vector3(0,Math.random()*0.1+0.01,0));
+		tempArray.push(particle);
+		tempArray[i].mesh.position.set(position.x+Math.random()*2-1,position.y+Math.random()*2-1,position.z+Math.random()*2-1);
+		scene.add(tempArray[i].mesh);
+	}
+	
+	return tempArray;
+}
+
+function particleSmoke(generator){
+	for(var i=0;i<generator.noOfParticles;i++){
+		if(generator.particleArray[i].lifetime<=0){
+			generator.particleArray[i].mesh.position.y = generator.position.y+Math.random()*2-1;
+			generator.particleArray[i].lifetime = generator.particleArray[i].maxLifetime;
+		}
+		generator.particleArray[i].mesh.position.x += generator.particleArray[i].velocity.x;
+		generator.particleArray[i].mesh.position.y += generator.particleArray[i].velocity.y;
+		generator.particleArray[i].mesh.position.z += generator.particleArray[i].velocity.z;
+		
+		generator.particleArray[i].mesh.rotation.x += generator.particleArray[i].rotation.x;
+		generator.particleArray[i].mesh.rotation.y += generator.particleArray[i].rotation.y;
+		generator.particleArray[i].mesh.rotation.z += generator.particleArray[i].rotation.z;
+		
+		generator.particleArray[i].lifetime -= 0.1;
+	}
+}
+
+function instanceSmoke(noOfParticles, position){
+	var smokeArray = initialiseSmoke(noOfParticles, position);
+	
+	var generator = particleSystem.makeGenerator(smokeArray, noOfParticles, position);
+	
+	return generator;
+}*/
+
+var smokeInstanceA = new Smoke();
+var smokeGeneratorA = smokeInstanceA.initialiseSmoke(50,new THREE.Vector3(0,5,0));
+var smokeInstanceB = new Smoke();
+var smokeGeneratorB = smokeInstanceB.initialiseSmoke(75,new THREE.Vector3(10,5,-20));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//sparks
+var sparksArray = [];
+var noOfSparks = 100;
+var sparksPos;
+
+function initialiseSparks(position){
+	for(var i=0;i<noOfSparks;i++){
+		var sparkMesh = new THREE.Mesh(new THREE.ConeGeometry(Math.random()*0.04+0.01, 0.25, 3, 1), new THREE.MeshLambertMaterial({color: 0xffd27f, emissive: 0xffa500, emissiveIntensity: 0.9}));
+		//mesh,lifetime,rotation,speed
+		//var particle = makeParticle(sparkMesh, Math.random()*5+2, new THREE.Vector3(0,0,0), Math.random()*0.1+0.05);
+		var particle = particleSystem.makeParticle(sparkMesh, Math.random()*5+2, new THREE.Vector3(0,0,0), new THREE.Vector3(Math.random()*0.01-0.005,Math.random()*0.04-0.05,Math.random()*0.01-0.005));
+		sparksArray.push(particle);
+		sparksArray[i].mesh.position.set(position.x,position.y,position.z);
+		sparksArray[i].mesh.rotation.set(Math.PI,0,0);
+		scene.add(sparksArray[i].mesh);
+	}
+	
+	sparksPos = position;
+	particleSparks();
+}
+
+function particleSparks(){
+	requestAnimationFrame(particleSparks);
+	
+	for(var i=0;i<noOfSparks;i++){
+		if(sparksArray[i].lifetime<=0){
+			sparksArray[i].mesh.position.set(sparksPos.x,sparksPos.y,sparksPos.z);
+			sparksArray[i].lifetime = sparksArray[i].maxLifetime;
+		}
+		sparksArray[i].mesh.position.x += sparksArray[i].velocity.x;
+		sparksArray[i].mesh.position.y += sparksArray[i].velocity.y;
+		sparksArray[i].mesh.position.z += sparksArray[i].velocity.z;
+		sparksArray[i].mesh.rotation.x += sparksArray[i].rotation.x;
+		sparksArray[i].mesh.rotation.y += sparksArray[i].rotation.y;
+		sparksArray[i].mesh.rotation.z += sparksArray[i].rotation.z;
+		
+		sparksArray[i].lifetime -= 0.1;
+	}
+}
+
+var cylMeshArray = [];
+var noOfCylinders = 50;
+
+var icoMeshArray=[];
+var noOfSpheres = 100;
+
+var glowPos;
 
 //initialise particle
 function initialiseParticleGlow(position)
 {
 	//create cylinders
 	for(var i=0;i<noOfCylinders;i++){
-		geoArray.push(new THREE.CylinderGeometry(0.02,0.02,Math.random()*4.9+0.1,4));
-		matArray.push(new THREE.MeshBasicMaterial({color:generateRandomColour(0x003DF1, 0x33C1FF), transparent:true, opacity: 0.6}));
-		
-		meshArray.push(new THREE.Mesh(geoArray[i], matArray[i]));
+		var cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,Math.random()*4.9+0.1,4), new THREE.MeshBasicMaterial({color:generateRandomColour(0x003DF1, 0x33C1FF), transparent:true, opacity: 0.6}));
+		var particle = particleSystem.makeParticle(cylinderMesh, Math.random()*6+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0));
 		//randomise position
-		meshArray[i].position.set(position.x + Math.random()*5-2.5, position.y + Math.random()*12.5, position.z + Math.random()*5-2.5);
+		cylMeshArray.push(particle);
+		cylMeshArray[i].mesh.position.set(position.x + Math.random()*5-2.5, position.y + Math.random()*12.5, position.z + Math.random()*5-2.5);
 		
-		scene.add(meshArray[i]);
+		scene.add(cylMeshArray[i].mesh);
 	}
 	
 	//create spheres
 	for(var i=0;i<noOfSpheres;i++){
-		sphGeoArray.push(new THREE.SphereGeometry(Math.random()*0.04+0.01,8,8));
-		sphMatArray.push(new THREE.MeshBasicMaterial({color: generateRandomColour(0x003DF1, 0x33C1FF),transparent:true, opacity: 0.7}));
-		
-		sphMeshArray.push(new THREE.Mesh(sphGeoArray[i], sphMatArray[i]));
+		var icoMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.04+0.01), new THREE.MeshBasicMaterial({color: generateRandomColour(0x003DF1, 0x33C1FF),transparent:true, opacity: 0.7}));
+		var particle = particleSystem.makeParticle(icoMesh, Math.random()*6+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0));
+		icoMeshArray.push(particle);
 		//randomise position
-		sphMeshArray[i].position.set(position.x + Math.random()*5-2.5, position.y + Math.random()*12.5, position.z + Math.random()*5-2.5);
+		icoMeshArray[i].mesh.position.set(position.x + Math.random()*5-2.5, position.y + Math.random()*12.5, position.z + Math.random()*5-2.5);
 		
-		scene.add(sphMeshArray[i]);
+		scene.add(icoMeshArray[i].mesh);
 	}
+	
+	glowPos = position;
+	
+	particleGlow();
 }
 
 //called every frame
-function particleGlow(iFrame)
+function particleGlow()
 {
+	requestAnimationFrame(particleGlow);
+	
 	for(var i=0;i<noOfCylinders;i++){
-		if(meshArray[i].position.y>15){
-			meshArray[i].position.y = 0;
+		if(cylMeshArray[i].lifetime<= 0){
+			cylMeshArray[i].mesh.position.y = glowPos.y;
+			cylMeshArray[i].lifetime = cylMeshArray[i].maxLifetime;
 		}
-		meshArray[i].position.y += Math.random()*0.5;
+		cylMeshArray[i].mesh.position.y += cylMeshArray[i].velocity.y;
+		cylMeshArray[i].lifetime -= 0.1;
 	}
 	
 	//create spheres
 	for(var i=0;i<noOfSpheres;i++){
-		if(sphMeshArray[i].position.y>15){
-			sphMeshArray[i].position.y = 0;
+		if(icoMeshArray[i].lifetime<=0){
+			icoMeshArray[i].mesh.position.y = glowPos.y;
+			icoMeshArray[i].lifetime = icoMeshArray[i].maxLifetime;
 		}
-		sphMeshArray[i].position.y += Math.random()*0.5;
-	}
-}
-
-//Smoke
-var smokeArray = [];
-var noOfSmokeParts = 150;
-
-function initialiseSmoke(position){
-	for(var i=0;i<noOfSmokeParts;i++){
-		smokeArray.push(new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.5+0.1),new THREE.MeshPhongMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75})));
-		smokeArray[i].position.set(position.x + Math.random()*2-1, position.y + Math.random()*6-3, position.z + Math.random()*2-1);
-		scene.add(smokeArray[i]);
-	}
-}
-
-function particleSmoke(iFrame){
-	for(var i=0;i<noOfSmokeParts;i++){
-		if(smokeArray[i].position.y>6){
-			smokeArray[i].position.y = 0;
-		}
-		smokeArray[i].position.y += Math.random()*0.03+0.1;
-		smokeArray[i].rotation.x -= Math.random()*0.02;
-		smokeArray[i].rotation.y += Math.random()*0.1;
-		smokeArray[i].rotation.z += Math.random()*0.01;
+		icoMeshArray[i].mesh.position.y += icoMeshArray[i].velocity.y;
+		icoMeshArray[i].lifetime -= 0.1;
 	}
 }
 /*
@@ -755,15 +892,19 @@ function generateRandomColour(difference, minValue){
 END OF UTILITIES
 */
 
-initialiseSmoke(new THREE.Vector3(0,0,0));
-initialiseParticleGlow(new THREE.Vector3(0,0,0));
+//initialiseSmoke(new THREE.Vector3(0,5,0));
+//initialiseSparks(new THREE.Vector3(0,10,0));
+//initialiseParticleGlow(new THREE.Vector3(0,5,0));
+//initialiseExplosion(new THREE.Vector3(0,5,0));
+//particleSmoke(instanceSmoke(50,new THREE.Vector3(0,5,-20)));
+//particleSmoke(instanceSmoke(75,new THREE.Vector3(10,5,0)));
 
 var iFrame = 0;
 
 function animate() 
 {
     requestAnimationFrame(animate);
-
+	
 	//move lightPoint1
 	//lightPoint1.position.x = Math.sin(iFrame/100)*10;
 	//lightPoint1.position.z = Math.cos(iFrame/100)*10;
@@ -775,9 +916,8 @@ function animate()
 
 	shakeObjects(5);
 	
-	//VFX
-	particleGlow(iFrame);
-	particleSmoke(iFrame);
+	smokeInstanceA.particleSmoke(smokeGeneratorA);
+	smokeInstanceB.particleSmoke(smokeGeneratorB);
 
     iFrame ++;
 
