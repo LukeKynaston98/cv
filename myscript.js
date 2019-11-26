@@ -758,9 +758,9 @@ function instanceSmoke(noOfParticles, position){
 }*/
 
 var smokeInstanceA = new Smoke();
-var smokeGeneratorA = smokeInstanceA.initialiseSmoke(50,new THREE.Vector3(0,5,0));
+var smokeGeneratorA = smokeInstanceA.initialiseSmoke(15,new THREE.Vector3(0,5,0));
 var smokeInstanceB = new Smoke();
-var smokeGeneratorB = smokeInstanceB.initialiseSmoke(75,new THREE.Vector3(10,5,-20));
+var smokeGeneratorB = smokeInstanceB.initialiseSmoke(15,new THREE.Vector3(10,5,-20));
 
 
 
@@ -914,7 +914,7 @@ function animate()
 	lightPositionVisualise.position.y = lightPoint1.position.y;
 	lightPositionVisualise.position.z = lightPoint1.position.z;
 
-	shakeObjects(5);
+	//shakeObjects(5);
 	
 	smokeInstanceA.particleSmoke(smokeGeneratorA);
 	smokeInstanceB.particleSmoke(smokeGeneratorB);
