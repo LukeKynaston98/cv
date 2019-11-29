@@ -662,7 +662,7 @@ makeBook(new THREE.Vector3(4,4.5,-2), new THREE.Vector3(0,Math.PI/4,0));
 /*
 START OF VFX
 */
-
+/*
 //smoke--setup
 var smokeInstanceA = new Smoke();
 smokeInstanceA.initialiseSmoke(15,new THREE.Vector3(-5,5,0)); //number of particles, position
@@ -696,10 +696,10 @@ interactingInstanceC.particleInteracting();
 var explosionInstanceA = new ExplosionParticle();
 explosionInstanceA.initialiseExplosion(50, 50, new THREE.Vector3(0,5,-20)); //number of particles, position
 explosionInstanceA.particleExplode();
-
+*/
 
 var beamInstanceA = new Beam(1);
-beamInstanceA.initialiseInteracting(7,10,3, new THREE.Vector3(0,5,0));
+beamInstanceA.initialiseInteracting(7,10,4, new THREE.Vector3(0,5,0));
 beamInstanceA.particleInteracting();
 /*
 END OF VFX

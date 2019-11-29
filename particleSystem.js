@@ -19,6 +19,18 @@ class ParticleSystem{
 		};
 		return particle;
 	}
+	//overload with an additional parameter for mesh type
+	makeParticle(mesh, lifetime, rotation, velocity, meshType){
+		var particle = {
+			mesh : mesh,
+			maxLifetime : lifetime,
+			lifetime : lifetime,
+			rotation : rotation,
+			velocity : velocity,
+			meshType : meshType
+		};
+		return particle;
+	}
 	
 	makeGenerator(particleArray, noOfParticles, particlePosition){
 		var particleGenerator = {
@@ -451,8 +463,8 @@ class Beam{
 				theta+=2*Math.PI/noOfBeams;
 			}
 			var thinkness = Math.random()*0.03+0.02;
-			var cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(thinkness,thinkness,Math.random()*4.9+0.1,4), new THREE.MeshBasicMaterial({color:generateRandomColour(0x0000ff, 0x0000ff), transparent:true, opacity: 0.6}));
-			var particle = particleSystem.makeParticle(cylinderMesh, Math.random()*2+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0));
+			var cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(thinkness,thinkness,Math.random()*4.9+0.1,4), new THREE.MeshBasicMaterial({color:0x663A82, transparent:true, opacity: 0.6}));
+			var particle = particleSystem.makeParticle(cylinderMesh, Math.random()*2+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0), "cylinder");
 			tempArray.push(particle);
 			tempArray[i].mesh.position.set(position.x + this._radius*Math.cos(theta), position.y+Math.random()*3, position.z + this._radius*Math.sin(theta));
 			scene.add(tempArray[i].mesh);
@@ -468,7 +480,7 @@ class Beam{
 			}
 			
 			var icoMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.1+0.04), new THREE.MeshLambertMaterial({color: 0x663A82,emissive:0x663A82, emissiveIntensity: 0.9}));
-			var particle = particleSystem.makeParticle(icoMesh, Math.random()*2+1, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0));
+			var particle = particleSystem.makeParticle(icoMesh, Math.random()*2+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0), "sphere");
 			tempArray.push(particle);
 			tempArray[i].mesh.position.set(position.x + this._radius*Math.cos(theta), position.y+Math.random()*3, position.z + this._radius*Math.sin(theta));
 			scene.add(tempArray[i].mesh);
@@ -480,20 +492,26 @@ class Beam{
 			if(theta>2*Math.PI){
 				theta =0;
 			}else{
-				theta+=2*Math.PI/(noOfOrbs/4);
+				theta+=2*Math.PI/noOfToruses;
 			}
 			
-			var torMesh = new THREE.Mesh(new THREE.TorusGeometry(this._radius, 0.05, 3, noOfParticles, 2*Math.PI/6), new THREE.MeshLambertMaterial({color: 0x663A82, emissive:0x663A82, emissiveIntensity: 0.9}));
-			var particle = particleSystem.makeParticle(torMesh, Math.random()*2+1, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0));
+			var torMesh = new THREE.Mesh(new THREE.TorusGeometry(this._radius*1.2, 0.05, 3, 10, Math.random()*(2*Math.PI/5*2)+2*Math.PI/5), new THREE.MeshBasicMaterial({color:0x663A82, transparent:true, opacity: 0.6}));
+			var particle = particleSystem.makeParticle(torMesh, 1, new THREE.Vector3(0,0,Math.random()*0.49+0.01), new THREE.Vector3(0,0,0), "torus");
 			tempArray.push(particle);
-			tempArray[i].mesh.position.set(position.x,position.y,position.z);
-			tempArray[i].mesh.rotation.x=Math.PI/2;
+			tempArray[i].mesh.position.set(position.x,position.y + Math.random()*4.9+0.1,position.z);
+			tempArray[i].mesh.rotation.set(Math.PI/2,0,Math.random()*2*Math.PI);
 			scene.add(tempArray[i].mesh);
 		}
 		
 		//create main beam
+		var thinkness = 0.6;
+		var beamMesh = new THREE.Mesh(new THREE.CylinderGeometry(thinkness,thinkness,15, 6), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity: 0.6}));
+		var particle = particleSystem.makeParticle(beamMesh, 2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0), "beam");
+		tempArray.push(particle);
+		tempArray[i].mesh.position.set(position.x, position.y-10, position.z);
+		scene.add(tempArray[i].mesh);
 		
-		var noOfParticles = noOfBeams+noOfOrbs/*+noOfToruses+1*/;
+		var noOfParticles = noOfBeams+noOfOrbs+noOfToruses+1;
 		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles, position);
 		this._isActive = true;
 	}
@@ -506,9 +524,27 @@ class Beam{
 					this._generator.particleArray[i].lifetime = this._generator.particleArray[i].maxLifetime;
 				}
 				
-				this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
+				switch(this._generator.particleArray[i].meshType){
+					case "torus":
+						//do not decrement life
+						this._generator.particleArray[i].mesh.rotation.z += this._generator.particleArray[i].rotation.z;
+						break;
+						
+					case "beam":
+						if(this._generator.particleArray[i].mesh.position.y<10)
+						{
+							this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
+						}
+						break;
+					
+					default:
+						this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
+						this._generator.particleArray[i].lifetime -= 0.1;
+						break;
+				}
 				
-				this._generator.particleArray[i].lifetime -= 0.1;
+				
+				
 			}
 			
 			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance
