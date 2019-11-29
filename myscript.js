@@ -682,7 +682,7 @@ var interactingInstanceA = new InteractingParticleA();
 interactingInstanceA.initialiseInteracting(15,25,new THREE.Vector3(5,0,0), 0x003DF1, 0x33C1FF);
 interactingInstanceA.particleInteracting();
 
-//interacting particleB--setup
+//helix--setup
 var interactingInstanceB = new Helix(1);
 interactingInstanceB.initialiseInteracting(50,new THREE.Vector3(2.5,5,0));
 interactingInstanceB.particleInteracting();
@@ -696,11 +696,16 @@ interactingInstanceC.particleInteracting();
 var explosionInstanceA = new ExplosionParticle();
 explosionInstanceA.initialiseExplosion(50, 50, new THREE.Vector3(0,5,-20)); //number of particles, position
 explosionInstanceA.particleExplode();
-*/
 
+//beam--setup
 var beamInstanceA = new Beam(1);
 beamInstanceA.initialiseInteracting(7,10,4, new THREE.Vector3(0,5,0));
 beamInstanceA.particleInteracting();
+*/
+
+var breezeInstance = new Breeze(0.75);
+breezeInstance.initialiseInteracting(60,new THREE.Vector3(0,7,0));
+breezeInstance.particleInteracting();
 /*
 END OF VFX
 */

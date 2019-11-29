@@ -550,4 +550,97 @@ class Beam{
 			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance
 		}
 	}
-}
+}//end beam
+
+class Breeze{
+	constructor(radius){
+		this._generator = null;
+		this._radius=radius;
+	}
+	
+	get isActive(){
+		return this._isActive;
+	}
+	
+	set isActive(active){
+		this._isActive = active;
+	}
+	
+	initialiseInteracting(noOfParticles, position)
+	{
+		var tempArray=[];
+		var theta = 0;
+		
+		//create spheres
+		for(var i=0;i<noOfParticles;i++){
+			if(theta>2*Math.PI){
+				theta =0;
+			}else{
+				theta+=2*Math.PI/noOfParticles;
+			}
+			
+			var icoMesh = new THREE.Mesh(new THREE.SphereGeometry(0.25,6,6), new THREE.MeshBasicMaterial({color: 0xebebeb}));
+			var particle = particleSystem.makeParticle(icoMesh, 20, new THREE.Vector3(0,0,0), new THREE.Vector3(0.05,Math.random()*0.4+0.1,0),"wave");
+			tempArray.push(particle);
+			//apply positive or negative theta based on the value of i
+			tempArray[i].mesh.position.set(position.x + theta, position.y+this._radius*Math.sin(theta), position.z);
+			tempArray[i].mesh.scale.set(0.05,0.05,0.05);
+			scene.add(tempArray[i].mesh);
+		}
+		
+		//create 3 lines that move randomly
+		for(var i=noOfParticles; i<noOfParticles+3;i++){
+			var lineMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.01,Math.random()*3+1,6), new THREE.MeshBasicMaterial({color: 0xebebeb}));
+			var particle = particleSystem.makeParticle(lineMesh, 20, new THREE.Vector3(0,0,0), new THREE.Vector3(Math.random()*0.04+0.01,Math.random()*0.4+0.1,0), "line");
+			tempArray.push(particle);
+			//apply positive or negative theta based on the value of i
+			tempArray[i].mesh.position.set(position.x+Math.random()*2, position.y+Math.random()*2-1, position.z);
+			tempArray[i].mesh.rotation.set(Math.PI/2,0,Math.PI/2);
+			scene.add(tempArray[i].mesh);
+		}
+		
+		noOfParticles+=3;
+		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles, position);
+		this._isActive = true;
+	}
+	
+	particleInteracting = function(){
+		if(this._isActive){
+			for(var i=0;i<this._generator.noOfParticles;i++){
+				if(this._generator.particleArray[i].mesh.position.x>=this._generator.position.x+(2*Math.PI)){
+					switch(this._generator.particleArray[i].meshType){
+						case "wave":
+							this._generator.particleArray[i].mesh.position.x = this._generator.position.x;
+							this._generator.particleArray[i].mesh.scale.set(0.05,0.05,0.05);
+							break;
+							
+						case "line":
+							this._generator.particleArray[i].mesh.position.x = this._generator.position.x+Math.random()*1.5;
+							this._generator.particleArray[i].mesh.position.y = this._generator.position.y + Math.random()*2-1;
+							this._generator.particleArray[i].mesh.scale.set(0.05,0.05,0.05);
+							break;
+							
+						default:
+							break;
+					}
+					
+				}
+				
+				if(this._generator.particleArray[i].mesh.position.x<=this._generator.position.x+(2*Math.PI)/6){
+					this._generator.particleArray[i].mesh.scale.x += 0.03;
+					this._generator.particleArray[i].mesh.scale.y += 0.03;
+					this._generator.particleArray[i].mesh.scale.z += 0.03;
+				}else if(this._generator.particleArray[i].mesh.position.x>=this._generator.position.x+(((2*Math.PI)/6)*5)){
+					this._generator.particleArray[i].mesh.scale.x -= 0.03;
+					this._generator.particleArray[i].mesh.scale.y -= 0.03;
+					this._generator.particleArray[i].mesh.scale.z -= 0.03;
+				}
+				
+				this._generator.particleArray[i].mesh.position.x += this._generator.particleArray[i].velocity.x;
+				
+			}
+			
+			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance
+		}
+	}
+}//end breeze
