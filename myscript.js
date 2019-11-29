@@ -105,7 +105,7 @@ function makeDeskVector(position, rotation, withDrawers){
 	
 	//Desk Top
 	var deskTopGeometry = new THREE.BoxGeometry(10,0.1,5);
-	var deskTopMaterial = new THREE.MeshStandardMaterial({color: 0xc19a6b});
+	var deskTopMaterial = new THREE.MeshLambertMaterial({color: 0xc19a6b});
 	var deskTopMesh = new THREE.Mesh(deskTopGeometry, deskTopMaterial);
 	//set shadow relationship
 	deskTopMesh.castShadow = true;
@@ -115,7 +115,7 @@ function makeDeskVector(position, rotation, withDrawers){
 	//Desk Drawer
 	if(withDrawers){
 		var deskDrawerGeometry = new THREE.BoxGeometry(2,3.9,5);
-		var deskDrawerMaterial = new THREE.MeshStandardMaterial({color: 0xffffff});
+		var deskDrawerMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
 		var deskDrawerMesh = new THREE.Mesh(deskDrawerGeometry,deskDrawerMaterial);
 		deskDrawerMesh.parent = deskTopMesh;
 		deskDrawerMesh.position.set(-4,-2,0);
@@ -131,7 +131,7 @@ function makeDeskVector(position, rotation, withDrawers){
 	var deskLegs = [];
 	for(var i=0; i<numberOfLegs;i++){
 		var deskLegGeometry = new THREE.CylinderGeometry(0.2,0.2,3.9,6);
-		var deskLegMaterial = new THREE.MeshStandardMaterial({color: 0x1f1f1f});
+		var deskLegMaterial = new THREE.MeshLambertMaterial({color: 0x1f1f1f});
 		var deskLegMesh = new THREE.Mesh(deskLegGeometry, deskLegMaterial);
 		//set shadow relationship
 		deskLegMesh.castShadow = true;
@@ -162,14 +162,14 @@ function makeDeskVector(position, rotation, withDrawers){
 function makePlant(position, numberOfLeaves){
 	//Pot base
 	var potBaseGeometry = new THREE.CylinderGeometry(2,1.5,4,6);
-	var potBaseMaterial = new THREE.MeshStandardMaterial({color:0x734222});
+	var potBaseMaterial = new THREE.MeshLambertMaterial({color:0x734222});
 	var potBaseMesh = new THREE.Mesh(potBaseGeometry, potBaseMaterial);
 	potBaseMesh.castShadow = true;
 	potBaseMesh.receiveShadow = true;
 	scene.add(potBaseMesh);
 	//Pot rim
 	var potRimGeometry = new THREE.CylinderGeometry(2.2,2.2,1,6);
-	var potRimMaterial = new THREE.MeshStandardMaterial({color:0x734222});
+	var potRimMaterial = new THREE.MeshLambertMaterial({color:0x734222});
 	var potRimMesh = new THREE.Mesh(potRimGeometry, potRimMaterial);
 	potRimMesh.parent = potBaseMesh;
 	potRimMesh.position.set(0,1.5,0);
@@ -180,7 +180,7 @@ function makePlant(position, numberOfLeaves){
 	
 	//stem
 	var stemGeometry = new THREE.CylinderGeometry(0.25,0.25,7,6);
-	var stemMaterial = new THREE.MeshStandardMaterial({color:0x644117 });
+	var stemMaterial = new THREE.MeshLambertMaterial({color:0x644117 });
 	var stemMesh = new THREE.Mesh(stemGeometry, stemMaterial);
 	stemMesh.parent = potBaseMesh;
 	stemMesh.position.set(0,5,0);
@@ -191,7 +191,7 @@ function makePlant(position, numberOfLeaves){
 	//leaves
 	for(var i =0; i<numberOfLeaves; i++){
 		var leafGeometry = new THREE.TetrahedronGeometry(Math.random()*2+0.1,0);
-		var leafMaterial = new THREE.MeshStandardMaterial({color:0x4f7942});
+		var leafMaterial = new THREE.MeshLambertMaterial({color:0x4f7942});
 		var leafMesh = new THREE.Mesh(leafGeometry, leafMaterial);
 		leafMesh.castShadow = true;
 		leafMesh.receiveShadow = false;
@@ -211,7 +211,7 @@ function makeFilingCabinet(position, rotation){
 	var numberOfHandles = 4;
 	//body
 	var cabinetGeometry = new THREE.BoxGeometry(6,30,10);
-	var cabinetMaterial = new THREE.MeshStandardMaterial({color:0x3a3a3a});
+	var cabinetMaterial = new THREE.MeshLambertMaterial({color:0x3a3a3a});
 	var cabinetMesh = new THREE.Mesh(cabinetGeometry,cabinetMaterial);
 	cabinetMesh.castShadow = true;
 	cabinetMesh.receiveShadow = true;
@@ -220,7 +220,7 @@ function makeFilingCabinet(position, rotation){
 	//handles
 	for(var i=0;i<numberOfHandles;i++){
 		var handleGeometry = new THREE.TorusGeometry(0.75,0.1,6,6, Math.PI);
-		var handleMaterial = new THREE.MeshStandardMaterial({color:0xebebeb});
+		var handleMaterial = new THREE.MeshLambertMaterial({color:0xebebeb});
 		var handleMesh = new THREE.Mesh(handleGeometry,handleMaterial);
 		handleMesh.castShadow = true;
 		handleMesh.receiveShadow = true;
@@ -239,7 +239,7 @@ function makeFilingCabinet(position, rotation){
 //start of mug
 function makeMug(position, rotation){
 	var mugGeometry = new THREE.CylinderGeometry(0.75,0.75,1.75,6);
-	var mugMaterial = new THREE.MeshStandardMaterial({color:0xffffff});
+	var mugMaterial = new THREE.MeshLambertMaterial({color:0xffffff});
 	var mugMesh = new THREE.Mesh(mugGeometry,mugMaterial);
 	mugMesh.castShadow = true;
 	mugMesh.receiveShadow = true;
@@ -247,7 +247,7 @@ function makeMug(position, rotation){
 	
 	//handle
 	var handleGeometry = new THREE.TorusGeometry(0.75,0.1,6,6, Math.PI);
-	var handleMaterial = new THREE.MeshStandardMaterial({color:0xebebeb});
+	var handleMaterial = new THREE.MeshLambertMaterial({color:0xebebeb});
 	var handleMesh = new THREE.Mesh(handleGeometry,handleMaterial);
 	handleMesh.castShadow = true;
 	handleMesh.receiveShadow = true;
@@ -265,7 +265,7 @@ function makeMug(position, rotation){
 function makeClock(position, rotation){
 	//clock face
 	var clockFaceGeometry = new THREE.CylinderGeometry(2.5,2.5,0.1,8);
-	var clockFaceMaterial = new THREE.MeshStandardMaterial({color:0xffffff});
+	var clockFaceMaterial = new THREE.MeshBasicMaterial({color:0xffffff});
 	var clockFaceMesh = new THREE.Mesh(clockFaceGeometry,clockFaceMaterial);
 	clockFaceMesh.castShadow = true;
 	clockFaceMesh.receiveShadow = true;
@@ -273,7 +273,7 @@ function makeClock(position, rotation){
 	
 	//clock edge
 	var clockEdgeGeometry = new THREE.TorusGeometry(2.5,0.3,6,8);
-	var clockEdgeMaterial = new THREE.MeshStandardMaterial({color:0xa1a1a1});
+	var clockEdgeMaterial = new THREE.MeshLambertMaterial({color:0xa1a1a1});
 	var clockEdgeMesh = new THREE.Mesh(clockEdgeGeometry,clockEdgeMaterial);
 	clockEdgeMesh.castShadow = true;
 	clockEdgeMesh.receiveShadow = true;
@@ -289,7 +289,7 @@ function makeClock(position, rotation){
 function makeStapler(position, rotation){
 	//stapler base
 	var staplerBaseGeometry = new THREE.BoxGeometry(1,0.2,3);
-	var staplerBaseMaterial = new THREE.MeshStandardMaterial({color:0x1f1f1f});
+	var staplerBaseMaterial = new THREE.MeshLambertMaterial({color:0x1f1f1f});
 	var staplerBaseMesh = new THREE.Mesh(staplerBaseGeometry, staplerBaseMaterial);
 	staplerBaseMesh.castShadow = true;
 	staplerBaseMesh.receiveShadow = true;
@@ -297,7 +297,7 @@ function makeStapler(position, rotation){
 	
 	//stapler top
 	var staplerTopGeometry = new THREE.BoxGeometry(1,0.7,3);
-	var staplerTopMaterial = new THREE.MeshStandardMaterial({color:0x1f1f1f});
+	var staplerTopMaterial = new THREE.MeshLambertMaterial({color:0x1f1f1f});
 	var staplerTopMesh = new THREE.Mesh(staplerTopGeometry, staplerTopMaterial);
 	staplerTopMesh.castShadow = true;
 	staplerTopMesh.receiveShadow = true;
@@ -308,7 +308,7 @@ function makeStapler(position, rotation){
 	
 	//stapler hinge
 	var staplerHingeGeometry = new THREE.BoxGeometry(1.1,1,1);
-	var staplerHingeMaterial = new THREE.MeshStandardMaterial({color:0x1f1f1f});
+	var staplerHingeMaterial = new THREE.MeshLambertMaterial({color:0x1f1f1f});
 	var staplerHingeMesh = new THREE.Mesh(staplerHingeGeometry, staplerHingeMaterial);
 	staplerHingeMesh.castShadow = true;
 	staplerHingeMesh.receiveShadow = true;
@@ -325,7 +325,7 @@ function makeStapler(position, rotation){
 function makeComputer(position, rotation){
 	//computer
 	var computerBodyGeometry = new THREE.BoxGeometry(3,5,5);
-	var computerBodyMaterial = new THREE.MeshStandardMaterial({color: 0x1f1f1f});
+	var computerBodyMaterial = new THREE.MeshLambertMaterial({color: 0x1f1f1f});
 	var computerBodyMesh = new THREE.Mesh(computerBodyGeometry,computerBodyMaterial);
 	computerBodyMesh.castShadow = true;
 	computerBodyMesh.receiveShadow = true;
@@ -340,7 +340,7 @@ function makeComputer(position, rotation){
 function makeMonitor(position, rotation){
 	//monitor stand base
 	var monitorBaseGeometry = new THREE.BoxGeometry(5,0.25,1);
-	var monitorBaseMaterial = new THREE.MeshStandardMaterial({color:0x1f1f1f});
+	var monitorBaseMaterial = new THREE.MeshLambertMaterial({color:0x1f1f1f});
 	var monitorBaseMesh = new THREE.Mesh(monitorBaseGeometry,monitorBaseMaterial);
 	monitorBaseMesh.castShadow = true;
 	monitorBaseMesh.receiveShadow = true;
@@ -349,7 +349,7 @@ function makeMonitor(position, rotation){
 	//monitor stands
 	for(var i=0;i<2;i++){
 		var monitorStandGeometry = new THREE.BoxGeometry(0.2,3,0.25);
-		var monitorStandMaterial = new THREE.MeshStandardMaterial({color:0x1f1f1f});
+		var monitorStandMaterial = new THREE.MeshLambertMaterial({color:0x1f1f1f});
 		var monitorStandMesh = new THREE.Mesh(monitorStandGeometry,monitorStandMaterial);
 		monitorStandMesh.castShadow = true;
 		monitorStandMesh.receiveShadow = true;
@@ -360,7 +360,7 @@ function makeMonitor(position, rotation){
 	
 	//monitor
 	var monitorGeometry = new THREE.BoxGeometry(10,6,0.3);
-	var monitorMaterial = new THREE.MeshStandardMaterial({color:0x1f1f1f});
+	var monitorMaterial = new THREE.MeshLambertMaterial({color:0x1f1f1f});
 	var monitorMesh = new THREE.Mesh(monitorGeometry,monitorMaterial);
 	monitorMesh.castShadow = true;
 	monitorMesh.receiveShadow = true;
@@ -370,7 +370,7 @@ function makeMonitor(position, rotation){
 	
 	//screen
 	var screenGeometry = new THREE.PlaneGeometry(9,5);
-	var screenMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff, side: THREE.DoubleSide});
+	var screenMaterial = new THREE.MeshBasicMaterial({color: 0x0000ff, side: THREE.DoubleSide});
 	var screenMesh = new THREE.Mesh(screenGeometry,screenMaterial);
 	screenMesh.castShadow = true;
 	screenMesh.receiveShadow = true;
@@ -386,7 +386,7 @@ function makeMonitor(position, rotation){
 function makeKeyboard(position, rotation){
 	//keyboard
 	var keyboardGeometry = new THREE.BoxGeometry(6,0.25,1.25);
-	var keyboardMaterial = new THREE.MeshStandardMaterial({color: 0x1f1f1f});
+	var keyboardMaterial = new THREE.MeshLambertMaterial({color: 0x1f1f1f});
 	var keyboardMesh = new THREE.Mesh(keyboardGeometry,keyboardMaterial);
 	keyboardMesh.castShadow = false;
 	keyboardMesh.receiveShadow = true;
@@ -400,7 +400,7 @@ function makeKeyboard(position, rotation){
 //start of mouse
 function makeMouse(position, rotation){
 	var mouseGeometry = new THREE.BoxGeometry(0.75,0.25,2);
-	var mouseMaterial = new THREE.MeshStandardMaterial({color: 0x1f1f1f});
+	var mouseMaterial = new THREE.MeshLambertMaterial({color: 0x1f1f1f});
 	var mouseMesh = new THREE.Mesh(mouseGeometry,mouseMaterial);
 	mouseMesh.castShadow = false;
 	mouseMesh.receiveShadow = true;
@@ -416,7 +416,7 @@ function makeShelf(position, rotation){
 	var numberOfShelves = 3;
 	//shelf base
 	var shelfBaseGeometry = new THREE.BoxGeometry(7,0.5,2);
-	var shelfBaseMaterial = new THREE.MeshStandardMaterial({color:0x3a3a3a});
+	var shelfBaseMaterial = new THREE.MeshLambertMaterial({color:0x3a3a3a});
 	var shelfBaseMesh = new THREE.Mesh(shelfBaseGeometry, shelfBaseMaterial);
 	shelfBaseMesh.castShadow = true;
 	shelfBaseMesh.receiveShadow = true;
@@ -425,7 +425,7 @@ function makeShelf(position, rotation){
 	//shelf top
 	for(var i=0; i<numberOfShelves;i++){
 		var shelfGeometry = new THREE.BoxGeometry(7,0.5,2);
-		var shelfMaterial = new THREE.MeshStandardMaterial({color:0x3a3a3a});
+		var shelfMaterial = new THREE.MeshLambertMaterial({color:0x3a3a3a});
 		var shelfMesh = new THREE.Mesh(shelfGeometry, shelfMaterial);
 		shelfMesh.castShadow = true;
 		shelfMesh.receiveShadow = true;
@@ -438,7 +438,7 @@ function makeShelf(position, rotation){
 	//sides
 	for(var j=0;j<2;j++){
 		var sideGeometry = new THREE.BoxGeometry(0.5,15,2);
-		var sideMaterial = new THREE.MeshStandardMaterial({color:0x3a3a3a});
+		var sideMaterial = new THREE.MeshLambertMaterial({color:0x3a3a3a});
 		var sideMesh = new THREE.Mesh(sideGeometry,sideMaterial);
 		sideMesh.castShadow = true;
 		sideMesh.receiveShadow = true;
@@ -455,7 +455,7 @@ function makeShelf(position, rotation){
 	
 	//back
 	var shelfBackGeometry = new THREE.BoxGeometry(7,15,0.5);
-	var shelfBackMaterial = new THREE.MeshStandardMaterial({color:0x3a3a3a});
+	var shelfBackMaterial = new THREE.MeshLambertMaterial({color:0x3a3a3a});
 	var shelfBackMesh = new THREE.Mesh(shelfBackGeometry, shelfBackMaterial);
 	shelfBackMesh.castShadow = true;
 	shelfBackMesh.receiveShadow = true;
@@ -472,7 +472,7 @@ function makeShelf(position, rotation){
 function makeChair(position, rotation){
 	//seat
 	var seatGeometry = new THREE.BoxGeometry(4,0.5,4);
-	var seatMaterial = new THREE.MeshStandardMaterial({color: 0x9a339a});
+	var seatMaterial = new THREE.MeshLambertMaterial({color: 0x9a339a});
 	var seatMesh = new THREE.Mesh(seatGeometry,seatMaterial);
 	seatMesh.castShadow = true;
 	seatMesh.receiveShadow = true;
@@ -480,7 +480,7 @@ function makeChair(position, rotation){
 	
 	//seat back
 	var seatBackGeometry = new THREE.BoxGeometry(4,6,0.5);
-	var seatBackMaterial = new THREE.MeshStandardMaterial({color: 0x9a339a});
+	var seatBackMaterial = new THREE.MeshLambertMaterial({color: 0x9a339a});
 	var seatBackMesh = new THREE.Mesh(seatBackGeometry,seatBackMaterial);
 	seatBackMesh.castShadow = true;
 	seatBackMesh.receiveShadow = true;
@@ -491,7 +491,7 @@ function makeChair(position, rotation){
 	//legs
 	for(var i=0;i<4;i++){
 		var legGeometry = new THREE.BoxGeometry(0.25,4,0.25);
-		var legMaterial = new THREE.MeshStandardMaterial({color: 0x1a1a1a});
+		var legMaterial = new THREE.MeshLambertMaterial({color: 0x1a1a1a});
 		var legMesh = new THREE.Mesh(legGeometry,legMaterial);
 		legMesh.castShadow = true;
 		legMesh.receiveShadow = true;
@@ -522,7 +522,7 @@ function makeChair(position, rotation){
 //start of lights
 function makeLights(position, rotation){
 	var lightGeometry = new THREE.BoxGeometry(1,0.25,10);
-	var lightMaterial = new THREE.MeshStandardMaterial({color: 0xcccccc});
+	var lightMaterial = new THREE.MeshLambertMaterial({color: 0xcccccc});
 	var lightMesh = new THREE.Mesh(lightGeometry,lightMaterial);
 	lightMesh.castShadow = true;
 	lightMesh.receiveShadow = false;
@@ -531,7 +531,7 @@ function makeLights(position, rotation){
 	//supports
 	for(var i=0;i<2;i++){
 		var supportGeometry = new THREE.CylinderGeometry(0.1,0.1,6,8);
-		var supportMaterial = new THREE.MeshStandardMaterial({color: 0x1f1f1f});
+		var supportMaterial = new THREE.MeshLambertMaterial({color: 0x1f1f1f});
 		var supportMesh = new THREE.Mesh(supportGeometry,supportMaterial);
 		supportMesh.castShadow = true;
 		supportMesh.receiveShadow = false;
@@ -556,7 +556,7 @@ function makeLights(position, rotation){
 //start of papers
 function makePaperStack(position, rotation){
 	var basePaperGeometry = new THREE.BoxGeometry(1.5,0.4,2);
-	var basePaperMaterial = new THREE.MeshStandardMaterial({color: 0xffffff, side: THREE.DoubleSide});
+	var basePaperMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
 	var basePaperMesh = new THREE.Mesh(basePaperGeometry,basePaperMaterial);
 	basePaperMesh.castShadow = true;
 	basePaperMesh.receiveShadow = true;
@@ -570,7 +570,7 @@ function makePaperStack(position, rotation){
 //start of book
 function makeBook(position, rotation){
 	var spineGeometry = new THREE.BoxGeometry(2,0.6,0.1);
-	var spineMaterial = new THREE.MeshStandardMaterial({color:0x001acc});
+	var spineMaterial = new THREE.MeshLambertMaterial({color:0x001acc});
 	var spineMesh = new THREE.Mesh(spineGeometry,spineMaterial);
 	spineMesh.castShadow = true;
 	spineMesh.receiveShadow = true;
@@ -579,7 +579,7 @@ function makeBook(position, rotation){
 	//faces
 	for(var i=0;i<2;i++){
 		var faceGeometry = new THREE.BoxGeometry(2,0.1,1.4);
-		var faceMaterial = new THREE.MeshStandardMaterial({color: 0x001acc});
+		var faceMaterial = new THREE.MeshLambertMaterial({color: 0x001acc});
 		var faceMesh = new THREE.Mesh(faceGeometry,faceMaterial);
 		faceMesh.castShadow = true;
 		faceMesh.receiveShadow = true;
@@ -599,7 +599,7 @@ function makeBook(position, rotation){
 	
 	//pages
 	var pagesGeometry = new THREE.BoxGeometry(2,0.35,1.3);
-	var pagesMaterial = new THREE.MeshStandardMaterial({color:0xffffff});
+	var pagesMaterial = new THREE.MeshLambertMaterial({color:0xffffff});
 	var pagesMesh = new THREE.Mesh(pagesGeometry,pagesMaterial);
 	pagesMesh.castShadow = true;
 	pagesMesh.receiveShadow = true;
@@ -662,221 +662,45 @@ makeBook(new THREE.Vector3(4,4.5,-2), new THREE.Vector3(0,Math.PI/4,0));
 /*
 START OF VFX
 */
-//explosion
-/*
-var expArray = [];
-var noOfExpParts = 150;
-var expPos;
 
-function initialiseExplosion(position){
-	for(var i=0;i<noOfExpParts;i++){
-		var expMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.4+0.1), new THREE.MeshPhongMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
-		var particle = particleSystem.makeParticle(expMesh, Math.random()*3+2, new THREE.Vector3(Math.random()*0.06-0.03,Math.random()*0.06-0.03,Math.random()*0.06-0.03), new THREE.Vector3(Math.random()*1-0.5,Math.random()*0.5,Math.random()*1-0.5));
-		expArray.push(particle);
-		expArray[i].mesh.position.set(position.x,position.y,position.z);
-		scene.add(expArray[i].mesh);
-	}
-	
-	expPos = position;
-	particleExplosion();
-}
-
-function particleExplosion(){
-	requestAnimationFrame(particleExplosion);
-	
-	for(var i=0;i<noOfExpParts;i++){
-		if(expArray[i].lifetime<=0){
-			expArray[i].mesh.position.x = expPos.x;
-			expArray[i].mesh.position.y = expPos.y;
-			expArray[i].mesh.position.z = expPos.z;
-			expArray[i].lifetime = expArray[i].maxLifetime;
-		}
-		expArray[i].mesh.position.x += expArray[i].velocity.x;
-		expArray[i].mesh.position.y += expArray[i].velocity.y;
-		expArray[i].mesh.position.z += expArray[i].velocity.z;
-		
-		expArray[i].mesh.rotation.x += expArray[i].rotation.x;
-		expArray[i].mesh.rotation.y += expArray[i].rotation.y;
-		expArray[i].mesh.rotation.z += expArray[i].rotation.z;
-		
-		expArray[i].lifetime -= 0.1;
-	}
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-//smoke
-/*function initialiseSmoke(noOfParticles, position){
-	var tempArray = [];
-	
-	for(var i=0; i<noOfParticles;i++){
-		var smokeMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.5+0.1),new THREE.MeshPhongMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
-		//mesh,lifetime,rotation,speed
-		var particle = particleSystem.makeParticle(smokeMesh, Math.random()*5+2, new THREE.Vector3(Math.random()*0.06-0.03,Math.random()*0.06-0.03,Math.random()*0.06-0.03), new THREE.Vector3(0,Math.random()*0.1+0.01,0));
-		tempArray.push(particle);
-		tempArray[i].mesh.position.set(position.x+Math.random()*2-1,position.y+Math.random()*2-1,position.z+Math.random()*2-1);
-		scene.add(tempArray[i].mesh);
-	}
-	
-	return tempArray;
-}
-
-function particleSmoke(generator){
-	for(var i=0;i<generator.noOfParticles;i++){
-		if(generator.particleArray[i].lifetime<=0){
-			generator.particleArray[i].mesh.position.y = generator.position.y+Math.random()*2-1;
-			generator.particleArray[i].lifetime = generator.particleArray[i].maxLifetime;
-		}
-		generator.particleArray[i].mesh.position.x += generator.particleArray[i].velocity.x;
-		generator.particleArray[i].mesh.position.y += generator.particleArray[i].velocity.y;
-		generator.particleArray[i].mesh.position.z += generator.particleArray[i].velocity.z;
-		
-		generator.particleArray[i].mesh.rotation.x += generator.particleArray[i].rotation.x;
-		generator.particleArray[i].mesh.rotation.y += generator.particleArray[i].rotation.y;
-		generator.particleArray[i].mesh.rotation.z += generator.particleArray[i].rotation.z;
-		
-		generator.particleArray[i].lifetime -= 0.1;
-	}
-}
-
-function instanceSmoke(noOfParticles, position){
-	var smokeArray = initialiseSmoke(noOfParticles, position);
-	
-	var generator = particleSystem.makeGenerator(smokeArray, noOfParticles, position);
-	
-	return generator;
-}*/
-
+//smoke--setup
 var smokeInstanceA = new Smoke();
-var smokeGeneratorA = smokeInstanceA.initialiseSmoke(15,new THREE.Vector3(0,5,0));
+smokeInstanceA.initialiseSmoke(15,new THREE.Vector3(-5,5,0)); //number of particles, position
+smokeInstanceA.particleSmoke();
+
 var smokeInstanceB = new Smoke();
-var smokeGeneratorB = smokeInstanceB.initialiseSmoke(15,new THREE.Vector3(10,5,-20));
+smokeInstanceB.initialiseSmoke(15,new THREE.Vector3(10,5,-20)); //number of particles, position
+smokeInstanceB.particleSmoke();
+
+//sparks--setup
+var sparksInstanceA = new Sparks();
+sparksInstanceA.initialiseSparks(35,new THREE.Vector3(0,10,0)); //number of particles, position
+sparksInstanceA.particleSparks();
+
+//interacting particleA--setup
+var interactingInstanceA = new InteractingParticleA();
+interactingInstanceA.initialiseInteracting(15,25,new THREE.Vector3(5,0,0), 0x003DF1, 0x33C1FF);
+interactingInstanceA.particleInteracting();
+
+//interacting particleB--setup
+var interactingInstanceB = new Helix(1);
+interactingInstanceB.initialiseInteracting(50,new THREE.Vector3(2.5,5,0));
+interactingInstanceB.particleInteracting();
+
+//interacting particleC--setup
+var interactingInstanceC = new CylindricalSparkles(1);
+interactingInstanceC.initialiseInteracting(100,new THREE.Vector3(-2.5,5,0));
+interactingInstanceC.particleInteracting();
+
+//explosion--setup
+var explosionInstanceA = new ExplosionParticle();
+explosionInstanceA.initialiseExplosion(50, 50, new THREE.Vector3(0,5,-20)); //number of particles, position
+explosionInstanceA.particleExplode();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-//sparks
-var sparksArray = [];
-var noOfSparks = 100;
-var sparksPos;
-
-function initialiseSparks(position){
-	for(var i=0;i<noOfSparks;i++){
-		var sparkMesh = new THREE.Mesh(new THREE.ConeGeometry(Math.random()*0.04+0.01, 0.25, 3, 1), new THREE.MeshLambertMaterial({color: 0xffd27f, emissive: 0xffa500, emissiveIntensity: 0.9}));
-		//mesh,lifetime,rotation,speed
-		//var particle = makeParticle(sparkMesh, Math.random()*5+2, new THREE.Vector3(0,0,0), Math.random()*0.1+0.05);
-		var particle = particleSystem.makeParticle(sparkMesh, Math.random()*5+2, new THREE.Vector3(0,0,0), new THREE.Vector3(Math.random()*0.01-0.005,Math.random()*0.04-0.05,Math.random()*0.01-0.005));
-		sparksArray.push(particle);
-		sparksArray[i].mesh.position.set(position.x,position.y,position.z);
-		sparksArray[i].mesh.rotation.set(Math.PI,0,0);
-		scene.add(sparksArray[i].mesh);
-	}
-	
-	sparksPos = position;
-	particleSparks();
-}
-
-function particleSparks(){
-	requestAnimationFrame(particleSparks);
-	
-	for(var i=0;i<noOfSparks;i++){
-		if(sparksArray[i].lifetime<=0){
-			sparksArray[i].mesh.position.set(sparksPos.x,sparksPos.y,sparksPos.z);
-			sparksArray[i].lifetime = sparksArray[i].maxLifetime;
-		}
-		sparksArray[i].mesh.position.x += sparksArray[i].velocity.x;
-		sparksArray[i].mesh.position.y += sparksArray[i].velocity.y;
-		sparksArray[i].mesh.position.z += sparksArray[i].velocity.z;
-		sparksArray[i].mesh.rotation.x += sparksArray[i].rotation.x;
-		sparksArray[i].mesh.rotation.y += sparksArray[i].rotation.y;
-		sparksArray[i].mesh.rotation.z += sparksArray[i].rotation.z;
-		
-		sparksArray[i].lifetime -= 0.1;
-	}
-}
-
-var cylMeshArray = [];
-var noOfCylinders = 50;
-
-var icoMeshArray=[];
-var noOfSpheres = 100;
-
-var glowPos;
-
-//initialise particle
-function initialiseParticleGlow(position)
-{
-	//create cylinders
-	for(var i=0;i<noOfCylinders;i++){
-		var cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,Math.random()*4.9+0.1,4), new THREE.MeshBasicMaterial({color:generateRandomColour(0x003DF1, 0x33C1FF), transparent:true, opacity: 0.6}));
-		var particle = particleSystem.makeParticle(cylinderMesh, Math.random()*6+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0));
-		//randomise position
-		cylMeshArray.push(particle);
-		cylMeshArray[i].mesh.position.set(position.x + Math.random()*5-2.5, position.y + Math.random()*12.5, position.z + Math.random()*5-2.5);
-		
-		scene.add(cylMeshArray[i].mesh);
-	}
-	
-	//create spheres
-	for(var i=0;i<noOfSpheres;i++){
-		var icoMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.04+0.01), new THREE.MeshBasicMaterial({color: generateRandomColour(0x003DF1, 0x33C1FF),transparent:true, opacity: 0.7}));
-		var particle = particleSystem.makeParticle(icoMesh, Math.random()*6+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0));
-		icoMeshArray.push(particle);
-		//randomise position
-		icoMeshArray[i].mesh.position.set(position.x + Math.random()*5-2.5, position.y + Math.random()*12.5, position.z + Math.random()*5-2.5);
-		
-		scene.add(icoMeshArray[i].mesh);
-	}
-	
-	glowPos = position;
-	
-	particleGlow();
-}
-
-//called every frame
-function particleGlow()
-{
-	requestAnimationFrame(particleGlow);
-	
-	for(var i=0;i<noOfCylinders;i++){
-		if(cylMeshArray[i].lifetime<= 0){
-			cylMeshArray[i].mesh.position.y = glowPos.y;
-			cylMeshArray[i].lifetime = cylMeshArray[i].maxLifetime;
-		}
-		cylMeshArray[i].mesh.position.y += cylMeshArray[i].velocity.y;
-		cylMeshArray[i].lifetime -= 0.1;
-	}
-	
-	//create spheres
-	for(var i=0;i<noOfSpheres;i++){
-		if(icoMeshArray[i].lifetime<=0){
-			icoMeshArray[i].mesh.position.y = glowPos.y;
-			icoMeshArray[i].lifetime = icoMeshArray[i].maxLifetime;
-		}
-		icoMeshArray[i].mesh.position.y += icoMeshArray[i].velocity.y;
-		icoMeshArray[i].lifetime -= 0.1;
-	}
-}
+var beamInstanceA = new Beam(1);
+beamInstanceA.initialiseInteracting(7,10,3, new THREE.Vector3(0,5,0));
+beamInstanceA.particleInteracting();
 /*
 END OF VFX
 */
@@ -915,9 +739,6 @@ function animate()
 	lightPositionVisualise.position.z = lightPoint1.position.z;
 
 	//shakeObjects(5);
-	
-	smokeInstanceA.particleSmoke(smokeGeneratorA);
-	smokeInstanceB.particleSmoke(smokeGeneratorB);
 
     iFrame ++;
 
