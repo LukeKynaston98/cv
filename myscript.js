@@ -757,11 +757,11 @@ explosionInstanceA.particleExplode();
 var beamInstanceA = new Beam(1);
 beamInstanceA.initialiseInteracting(7,10,4, new THREE.Vector3(0,5,0));
 beamInstanceA.particleInteracting();
-*/
 
 var breezeInstance = new Breeze(0.75);
 breezeInstance.initialiseInteracting(60,new THREE.Vector3(0,7,0));
 breezeInstance.particleInteracting();
+*/
 /*
 END OF VFX
 */
