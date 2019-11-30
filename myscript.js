@@ -36,7 +36,7 @@ lightPoint1.shadow.mapSize.height = 1024;
 lightPoint1.shadow.camera.near = 0.5;
 lightPoint1.shadow.camera.far = 1000;
 lightPoint1.shadow.radius = 5.0;
-/*
+
 // Floor
 var floorGeometry = new THREE.PlaneGeometry(160, 160);
 var floorMaterial = new THREE.MeshBasicMaterial( { color: 0x7788dd, side: THREE.DoubleSide } );
@@ -52,7 +52,6 @@ wallMesh.position.set(0,20,-80);
 scene.add(wallMesh);
 
 var particleSystem = new ParticleSystem();
-*/
 /**
 FUNCTIONALITY
 **/
@@ -156,7 +155,6 @@ function kyleSucksMuchDick()
 /**
 END FUNCTIONALITY
 **/
-/*
 //make desk function
 function makeDeskVector(position, rotation, withDrawers){
 	var numberOfLegs = 2;
@@ -715,8 +713,6 @@ makeLights(new THREE.Vector3(-10,12,0), new THREE.Vector3(0,0,0));
 makePaperStack(new THREE.Vector3(-7,4.25,-3), new THREE.Vector3(0,0,0));
 //make book
 makeBook(new THREE.Vector3(4,4.5,-2), new THREE.Vector3(0,Math.PI/4,0));
-*/
-
 /*
 START OF VFX
 */
