@@ -54,7 +54,29 @@ var particleSystem = new ParticleSystem();
 /**
 FUNCTIONALITY
 **/
+
+var controls = new THREE.DeviceOrientationControls(camera);
+
+	/**
+	START DEBUG
+	**/
+
+	/*ENABLES MOUSE CONTROLS*/
+	//var controls = new THREE.OrbitControls(camera, renderer.domElement);
+	//controls.enableDamping = true;
+	//controls.dampingFactor = 0.25;
+	//controls.screenSpacePanning = false;
+
+	/**
+	END DEBUG
+	**/
+
 var objectsToShake = [];
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2(-10000, -10000);
+
+// Add event listener
+window.addEventListener('mousemove', onMouseMove, false);
 
 function shakeObjects(range)
 {
@@ -66,19 +88,29 @@ function shakeObjects(range)
 			((Math.random() * shakeData.shakeIntensity*2) - shakeData.shakeIntensity*2)/100 + shakeData.startPosition.y,
 			((Math.random() * shakeData.shakeIntensity*2) - shakeData.shakeIntensity*2)/100 + shakeData.startPosition.z
 			);
+		shakedata.shakeTime++;
 	}
 }
 
+/*
+Marks the object to shake on next frame.
+invokes setToActive
+*/
 function setToShake(worldObject, intensity)
 {
-	//setToActive(worldObject);
+	setToActive(worldObject);
 	objectsToShake[objectsToShake.length] = shakeData = {
 		startPosition: new THREE.Vector3(worldObject.position.x, worldObject.position.y, worldObject.position.z),
 		objectInstance: worldObject,
-		shakeIntensity: intensity
+		shakeIntensity: intensity,
+		shakeTime: 0
 		};
 }
 
+/*
+Will change the material of the object,
+can attach a particle system play here?
+*/
 function setToActive(worldObject)
 {
 	var emissiveMaterial = new THREE.MeshLambertMaterial({
@@ -95,6 +127,30 @@ function setToActive(worldObject)
 		worldObject.children[i].material = emissiveMaterial;
 	}
 }
+
+function onMouseMove(event)
+{
+	mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+	mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+}
+
+function render()
+{
+	raycaster.setFromCamera(mouse, camera);
+	var intersects = raycaster.intersectObjects(scene.children);
+	
+	for ( var i = 0; i < intersects.length; i++ ) 
+	{
+		//setToShake(intersects[i], 4);
+	}
+	renderer.render(scene, camera);
+}
+
+function()
+{
+	
+}
+
 /**
 END FUNCTIONALITY
 **/
@@ -744,10 +800,11 @@ function animate()
 	lightPositionVisualise.position.z = lightPoint1.position.z;
 
 	//shakeObjects(5);
+	controls.update();
 
     iFrame ++;
 
-    renderer.render(scene, camera);
-
+    //renderer.render(scene, camera);
+	render();
 }
 animate();
