@@ -146,7 +146,7 @@ function render()
 	renderer.render(scene, camera);
 }
 
-function()
+function kyleSucksMuchDick()
 {
 	
 }
