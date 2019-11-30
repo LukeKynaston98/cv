@@ -10,7 +10,7 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight); // Size of the 2D projection
 document.body.appendChild(renderer.domElement); // add to the canvas
 
-renderer.setClearColor( 0xffffff, 0);
+renderer.setClearColor( 0xffffff, 1);
 
 //Lighting
 var lightAmbient = new THREE.AmbientLight(0x222222);
