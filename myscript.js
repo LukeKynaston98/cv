@@ -37,14 +37,14 @@ lightPoint1.shadow.radius = 5.0;
 
 // Floor
 var floorGeometry = new THREE.PlaneGeometry(160, 160);
-var floorMaterial = new THREE.MeshStandardMaterial( { color: 0x7788dd, side: THREE.DoubleSide } );
+var floorMaterial = new THREE.MeshBasicMaterial( { color: 0x7788dd, side: THREE.DoubleSide } );
 var meshFloor = new THREE.Mesh(floorGeometry, floorMaterial);
 meshFloor.rotation.x = Math.PI / 2;
 meshFloor.position.y = -4;
 
 //Back wall
 var wallGeometry = new THREE.PlaneGeometry(160,50);
-var wallMaterial = new THREE.MeshStandardMaterial({color: 0xcccccc, side:THREE.DoubleSide});
+var wallMaterial = new THREE.MeshBasicMaterial({color: 0xcccccc, side:THREE.DoubleSide});
 var wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
 wallMesh.position.set(0,20,-80);
 scene.add(wallMesh);
