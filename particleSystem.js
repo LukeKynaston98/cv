@@ -19,7 +19,7 @@ class ParticleSystem{
 		};
 		return particle;
 	}
-	//overload with an additional parameter for mesh type
+	//override with an additional parameter for mesh type
 	makeParticle(mesh, lifetime, rotation, velocity, meshType){
 		var particle = {
 			mesh : mesh,
@@ -32,6 +32,7 @@ class ParticleSystem{
 		return particle;
 	}
 	
+	//creates a particle generator that can be iterated through
 	makeGenerator(particleArray, noOfParticles, particlePosition){
 		var particleGenerator = {
 			particleArray : particleArray,
@@ -59,42 +60,72 @@ class Smoke{
 		this._isActive = active;
 	}
 	
+	//create a particle generator with created particles
 	initialiseSmoke(noOfParticles, position){
 		var tempArray = [];
-		
+		//create smoke particles and add them to the generator array before adding them to the scene
 		for(var i=0; i<noOfParticles;i++){
-			var smokeMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.5+0.1),new THREE.MeshBasicMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var smokeMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*0.5+0.1),new THREE.MeshBasicMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
 			//mesh,lifetime,rotation,speed
 			var particle = particleSystem.makeParticle(smokeMesh, Math.random()*5+2, new THREE.Vector3(Math.random()*0.06-0.03,Math.random()*0.06-0.03,Math.random()*0.06-0.03), new THREE.Vector3(0,Math.random()*0.1+0.01,0));
 			tempArray.push(particle);
+			//set random position around the given position
 			tempArray[i].mesh.position.set(position.x+Math.random()*2-1,position.y+Math.random()*2-1,position.z+Math.random()*2-1);
 			scene.add(tempArray[i].mesh);
 		}
-		
+		//create a generator using the smoke initialise variables made/used
 		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles, position);
+		//set the particle system to active
 		this._isActive = true;
 	}
 
+	//method should occur every frame, updates each smoke particle
 	particleSmoke = function(){
 		if(this._isActive){
 			for(var i=0;i<this._generator.noOfParticles;i++){
+				//check if the particle is dead, if it is, reset it
 				if(this._generator.particleArray[i].lifetime<=0){
 					this._generator.particleArray[i].mesh.position.y = this._generator.position.y+Math.random()*2-1;
 					this._generator.particleArray[i].lifetime = this._generator.particleArray[i].maxLifetime;
+					this._generator.particleArray[i].mesh.scale.set(1,1,1);
+				}else if(this._generator.particleArray[i].lifetime<=this._generator.particleArray[i].maxLifetime-2){
+					//if particle has been active for ~2 seconds start to decrease its scale
+					this._generator.particleArray[i].mesh.scale.x -= 0.025;
+					this._generator.particleArray[i].mesh.scale.y -= 0.025;
+					this._generator.particleArray[i].mesh.scale.z -= 0.025;
 				}
+				//update the vertical position of the particle
 				this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
-				
+				//update rotation of particles
 				this._generator.particleArray[i].mesh.rotation.x += this._generator.particleArray[i].rotation.x;
 				this._generator.particleArray[i].mesh.rotation.y += this._generator.particleArray[i].rotation.y;
 				this._generator.particleArray[i].mesh.rotation.z += this._generator.particleArray[i].rotation.z;
-				
+				//decrease particle lifetime
 				this._generator.particleArray[i].lifetime -= 0.1;
 			}
-			
-			requestAnimationFrame(this.particleSmoke.bind(this)); //bind the request to the object instance
+			//ensure this runs every frame
+			requestAnimationFrame(this.particleSmoke.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
 		}
 	}
+	
+	//function to destory particle generator and remove it from the scene
+	destroy = function(){
+		//loop through particle array and dispose of all individual particles
+		for(var i=0;i<this._generator.noOfParticles;i++){
+			this._generator.particleArray[i].mesh.geometry.dispose();
+			this._generator.particleArray[i].mesh.material.dispose();
+			scene.remove(this._generator.particleArray[i].mesh);
+		}
+		//finally, clear the array
+		this._generator.particleArray.clear;
+	}
 }//end smoke
+
+/*
+##############################################################################
+*/
 
 /*
 SPARKS##########
@@ -113,51 +144,74 @@ class Sparks{
 		this._isActive = active;
 	}
 	
+	//create a particle generator with created particles
 	initialiseSparks(noOfParticles, position){
 		var tempArray = [];
 		
 		for(var i=0;i<noOfParticles;i++){
-			var sparkMesh = new THREE.Mesh(new THREE.ConeGeometry(Math.random()*0.04+0.01, 0.25, 3, 1), new THREE.MeshLambertMaterial({color: 0xffd27f, emissive: 0xffa500, emissiveIntensity: 0.9}));
+			//buffer geo used as geo will be converted anyway
+			//lambert material used to allow emissive texture
+			var sparkMesh = new THREE.Mesh(new THREE.ConeBufferGeometry(Math.random()*0.04+0.01, 0.25, 3, 1), new THREE.MeshLambertMaterial({color: 0xffd27f, emissive: 0xffa500, emissiveIntensity: 0.9}));
 			//mesh,lifetime,rotation,speed
-			var particle = particleSystem.makeParticle(sparkMesh, Math.random()*5+6, new THREE.Vector3(0,0,0), new THREE.Vector3(Math.random()*0.005-0.0025,Math.random()*0.09-0.1,Math.random()*0.005-0.0025));
+			var particle = particleSystem.makeParticle(sparkMesh, Math.random()*5+6, new THREE.Vector3(0,0,0), new THREE.Vector3(Math.random()*0.005-0.0025,Math.random()*0.04+0.01,Math.random()*0.005-0.0025));
 			tempArray.push(particle);
+			//set random position around the given position
 			tempArray[i].mesh.position.set(position.x,position.y,position.z);
+			//set rotation
 			tempArray[i].mesh.rotation.set(Math.PI,0,0);
 			scene.add(tempArray[i].mesh);
 		}
 		
+		//create a generator
 		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles, position);
+		//set the particle to active
 		this._isActive = true;
 	}
 	
+	//method should occur every frame, updates each spark particle
 	particleSparks = function(){
 		if(this._isActive){
 			for(var i=0;i<this._generator.noOfParticles;i++){
+				//check if the particle is dead and reset it if it is
 				if(this._generator.particleArray[i].lifetime<=0){
 					this._generator.particleArray[i].mesh.position.set(this._generator.position.x,this._generator.position.y,this._generator.position.z);
+					this._generator.particleArray[i].velocity.y = Math.random()*0.04+0.01;
 					this._generator.particleArray[i].lifetime = this._generator.particleArray[i].maxLifetime;
 				}
+				//adds drag to the particle
+				this._generator.particleArray[i].velocity.y -= 0.001/*drag*/;
+				//updates the position using the particles velocity
 				this._generator.particleArray[i].mesh.position.x += this._generator.particleArray[i].velocity.x;
 				this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
 				this._generator.particleArray[i].mesh.position.z += this._generator.particleArray[i].velocity.z;
-				/*
-				this._generator.particleArray[i].mesh.rotation.x += this._generator.particleArray[i].rotation.x;
-				this._generator.particleArray[i].mesh.rotation.y += this._generator.particleArray[i].rotation.y;
-				this._generator.particleArray[i].mesh.rotation.z += this._generator.particleArray[i].rotation.z;
-				*/
-				
+				//decrease the life counter of the particle
 				this._generator.particleArray[i].lifetime -= 0.1;
 			}
-			
-			requestAnimationFrame(this.particleSparks.bind(this)); //bind the request to the object instance
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleSparks.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
 		}
+	}
+	
+	//function to destory particle generator and remove it from the scene
+	destroy = function(){
+		//loop through particle array and dispose of all individual particles
+		for(var i=0;i<this._generator.noOfParticles;i++){
+			this._generator.particleArray[i].mesh.geometry.dispose();
+			this._generator.particleArray[i].mesh.material.dispose();
+			scene.remove(this._generator.particleArray[i].mesh);
+		}
+		//finally, clear the array
+		this._generator.particleArray.clear;
 	}
 }//end sparks
 
+/*
+##############################################################################
+*/
 
 /*
 EXPLOSION########
-Traditioanl explosion particle
+Traditional explosion particle
 */
 class ExplosionParticle{
 	constructor(){
@@ -172,74 +226,184 @@ class ExplosionParticle{
 	set isActive(active){
 		this._isActive = active;
 	}
-	
+	//create a generator after creating the particles
 	initialiseExplosion(noOfSmokeParticles, noOfCloudParticles, position){
 		var tempArray = [];
 		
+		//smoke particles that spread upwards
 		for(var i=0;i<noOfSmokeParticles;i++){
-			var expMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.4+0.1), new THREE.MeshBasicMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var expMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*3.4/*0.4*/+0.1), new THREE.MeshBasicMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
+			//mesh,lifetime,rotation,speed
 			var particle = particleSystem.makeParticle(expMesh, Math.random()*2+1, new THREE.Vector3(Math.random()*0.06-0.03,Math.random()*0.06-0.03,Math.random()*0.06-0.03), new THREE.Vector3(Math.random()*4-2,Math.random()*0.4+0.1,Math.random()*4-2));
 			tempArray.push(particle);
+			//set position to the given position
 			tempArray[i].mesh.position.set(position.x,position.y,position.z);
 			scene.add(tempArray[i].mesh);
 		}
-		
+		//smoke particles that spread upwards
 		for(var i=noOfSmokeParticles;i<noOfSmokeParticles+noOfCloudParticles;i++){
-			var expMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.4+0.1), new THREE.MeshBasicMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var expMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*3.4/*0.4*/+0.1), new THREE.MeshBasicMaterial({color: 0x1f1f1f,transparent:true, opacity: 0.75}));
+			//mesh,lifetime,rotation,speed
 			var particle = particleSystem.makeParticle(expMesh, Math.random()*2+1, new THREE.Vector3(Math.random()*0.06-0.03,Math.random()*0.06-0.03,Math.random()*0.06-0.03), new THREE.Vector3(Math.random()*0.5-0.25,Math.random()*2+0.1,Math.random()*0.5-0.25));
 			tempArray.push(particle);
+			//set position to the given position
 			tempArray[i].mesh.position.set(position.x,position.y,position.z);
 			scene.add(tempArray[i].mesh);
 		}
-		
-		this._glowMesh=new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.4+0.1), new THREE.MeshBasicMaterial({color: 0xFFA500,transparent:true, opacity: 0.4}));
+		//explosion radius (single mesh)
+		this._glowMesh=new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*3.4/*0.4*/+0.1), new THREE.MeshBasicMaterial({color: 0xFFA500,transparent:true, opacity: 0.4}));
+		//set position to the given position
 		this._glowMesh.position.set(position.x,position.y,position.z);
 		this._glowMesh.scale.set(0,0,0)
 		scene.add(this._glowMesh);
-		
+		//create a generator
 		this._generator = particleSystem.makeGenerator(tempArray, noOfSmokeParticles+noOfCloudParticles, position);
+		//set the particle system to active
 		this._isActive = true;
 	}
-
+	//method should occur every frame, updates each explosion particle
 	particleExplode = function(){
 		if(this._isActive){
+			//check for each particle
 			for(var i=0;i<this._generator.noOfParticles;i++){
 				if(this._generator.particleArray == null){
 					this._generator.particleArray.clear;
 				}
-				
+				//if dead, delete the particle
 				if(this._generator.particleArray[i].lifetime<=0){
 					this._generator.particleArray[i].mesh.geometry.dispose();
 					this._generator.particleArray[i].mesh.material.dispose();
 					scene.remove(this._generator.particleArray[i].mesh);
 				}
-				
+				//if the particle isn't null
 				if(this._generator.particleArray[i] != null){
+					//update positon
 					this._generator.particleArray[i].mesh.position.x += this._generator.particleArray[i].velocity.x;
 					this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
 					this._generator.particleArray[i].mesh.position.z += this._generator.particleArray[i].velocity.z;
-					
+					//update rotation
 					this._generator.particleArray[i].mesh.rotation.x += this._generator.particleArray[i].rotation.x;
 					this._generator.particleArray[i].mesh.rotation.y += this._generator.particleArray[i].rotation.y;
 					this._generator.particleArray[i].mesh.rotation.z += this._generator.particleArray[i].rotation.z;
-					
-					
+					//decrease lifetime
 					this._generator.particleArray[i].lifetime -= 0.1;
 				}
 			}
-			
-			if(this._glowMesh.scale.x >=150){
+			//check the size of the blast radius--delete if too big
+			if(this._glowMesh.scale.x >=250){
 				this._glowMesh.geometry.dispose();
 				this._glowMesh.material.dispose();
 				scene.remove(this._glowMesh);
 			}else if(this._glowMesh!=null){
-				this._glowMesh.scale.set(this._glowMesh.scale.x+15,this._glowMesh.scale.y+15,this._glowMesh.scale.z+15);
+				//otherwise keep growing
+				this._glowMesh.scale.set(this._glowMesh.scale.x+25,this._glowMesh.scale.y+25,this._glowMesh.scale.z+25);
 			}
-			
-			requestAnimationFrame(this.particleExplode.bind(this)); //bind the request to the object instance
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleExplode.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
 		}
 	}
+	
+	//no destroy method as explosions are self destructive
 }//end explosion
+
+/*
+##############################################################################
+*/
+
+/*
+SMALL EXPLOSION########
+Traditional explosion particle but smaller
+*/
+class SmallExplosion{
+	constructor(){
+		this._generator = null;
+	}
+	
+	get isActive(){
+		return this._isActive;
+	}
+	
+	set isActive(active){
+		this._isActive = active;
+	}
+	//create particle generator after creating particles
+	initialiseExplosion(noOfSmokeParticles, noOfCloudParticles, position){
+		var tempArray = [];
+		
+		for(var i=0;i<noOfSmokeParticles;i++){
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var expMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*1.4+0.1), new THREE.MeshBasicMaterial({color: 0xffa500,transparent:true, opacity: 0.75}));
+			//mesh,lifetime,rotation,speed
+			var particle = particleSystem.makeParticle(expMesh, Math.random()*3+1, new THREE.Vector3(Math.random()*0.02-0.01,Math.random()*0.02-0.01,Math.random()*0.02-0.01), new THREE.Vector3(Math.random()*0.2-0.1,Math.random()*0.2+0.1,Math.random()*0.2-0.1));
+			tempArray.push(particle);
+			//set position to the given position
+			tempArray[i].mesh.position.set(position.x,position.y,position.z);
+			scene.add(tempArray[i].mesh);
+		}
+		
+		for(var i=noOfSmokeParticles;i<noOfSmokeParticles+noOfCloudParticles;i++){
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var expMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*1.4+0.1), new THREE.MeshBasicMaterial({color: 0xffa500,transparent:true, opacity: 0.75}));
+			//mesh,lifetime,rotation,speed
+			var particle = particleSystem.makeParticle(expMesh, Math.random()*3+1, new THREE.Vector3(Math.random()*0.02-0.01,Math.random()*0.02-0.01,Math.random()*0.02-0.01), new THREE.Vector3(Math.random()*0.2-0.1,Math.random()*0.2+0.1,Math.random()*0.2-0.1));
+			tempArray.push(particle);
+			//set position to the given position
+			tempArray[i].mesh.position.set(position.x,position.y,position.z);
+			scene.add(tempArray[i].mesh);
+		}
+		//create a generator
+		this._generator = particleSystem.makeGenerator(tempArray, noOfSmokeParticles+noOfCloudParticles, position);
+		//set the particle system to active
+		this._isActive = true;
+	}
+	//method should occur every frame, updates each explode particle
+	particleExplode = function(){
+		if(this._isActive){
+			for(var i=0;i<this._generator.noOfParticles;i++){
+				//clear the array if it is empty
+				if(this._generator.particleArray == null){
+					this._generator.particleArray.clear;
+				}
+				//destroy the particle if it is dead
+				if(this._generator.particleArray[i].lifetime<=0){
+					this._generator.particleArray[i].mesh.geometry.dispose();
+					this._generator.particleArray[i].mesh.material.dispose();
+					scene.remove(this._generator.particleArray[i].mesh);
+				}else if(this._generator.particleArray[i].lifetime<=this._generator.particleArray[i].maxLifetime-1){
+					//update its colour if it has been alive for ~1 second
+					this._generator.particleArray[i].mesh.material.color.sub(new THREE.Color(0x222222));
+				}
+				//if the particle is not null
+				if(this._generator.particleArray[i] != null){
+					//update position
+					this._generator.particleArray[i].mesh.position.x += this._generator.particleArray[i].velocity.x;
+					this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
+					this._generator.particleArray[i].mesh.position.z += this._generator.particleArray[i].velocity.z;
+					//update rotation
+					this._generator.particleArray[i].mesh.rotation.x += this._generator.particleArray[i].rotation.x;
+					this._generator.particleArray[i].mesh.rotation.y += this._generator.particleArray[i].rotation.y;
+					this._generator.particleArray[i].mesh.rotation.z += this._generator.particleArray[i].rotation.z;
+					//decrease particle lifetime
+					this._generator.particleArray[i].lifetime -= 0.1;
+				}
+			}
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleExplode.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
+		}
+	}
+	
+	//no destroy method as explosions are self destructive
+}
+
+/*
+##############################################################################
+*/
 
 /*
 INTERACTING##########
@@ -264,44 +428,95 @@ class InteractingParticleA{
 		
 		//create cylinders
 		for(var i=0;i<noOfCylinders;i++){
-			var cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,Math.random()*4.9+0.1,4), new THREE.MeshBasicMaterial({color:generateRandomColour(minColour, maxColour), transparent:true, opacity: 0.6}));
-			var particle = particleSystem.makeParticle(cylinderMesh, Math.random()*6+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0));
-			//randomise position
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var cylinderMesh = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.02,0.02,Math.random()*4.9+0.1,4), new THREE.MeshBasicMaterial({color:generateRandomColour(minColour, maxColour), transparent:true, opacity: 0.6}));
+			//mesh,lifetime,rotation,speed
+			var particle = particleSystem.makeParticle(cylinderMesh, Math.random()*6+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0), "vertical");
 			tempArray.push(particle);
+			//set random position around the given position
 			tempArray[i].mesh.position.set(position.x + Math.random()*5-2.5, position.y + Math.random()*12.5, position.z + Math.random()*5-2.5);
 			scene.add(tempArray[i].mesh);
 		}
 		
 		//create spheres
 		for(var i=noOfCylinders;i<noOfCylinders+noOfSpheres;i++){
-			var icoMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.04+0.025), new THREE.MeshBasicMaterial({color: generateRandomColour(minColour, maxColour),transparent:true, opacity: 0.7}));
-			var particle = particleSystem.makeParticle(icoMesh, Math.random()*6+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0));
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var icoMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*0.04+0.025), new THREE.MeshBasicMaterial({color: generateRandomColour(minColour, maxColour),transparent:true, opacity: 0.7}));
+			//mesh,lifetime,rotation,speed,type
+			var particle = particleSystem.makeParticle(icoMesh, Math.random()*6+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0), "vertical");
 			tempArray.push(particle);
-			//randomise position
+			//set random position around the given position
 			tempArray[i].mesh.position.set(position.x + Math.random()*5-2.5, position.y + Math.random()*12.5, position.z + Math.random()*5-2.5);
 			scene.add(tempArray[i].mesh);
 		}
 		
-		this._generator = particleSystem.makeGenerator(tempArray, noOfCylinders+noOfSpheres, position);
+		//buffer geo used as geo will be converted anyway
+		//basic material used to save processing power
+		var ringMesh = new THREE.Mesh(new THREE.TorusBufferGeometry(4,0.1,16,6), new THREE.MeshBasicMaterial({color: generateRandomColour(minColour, maxColour)}));
+		//mesh,lifetime,rotation,speed,type
+		var ringParticle = particleSystem.makeParticle(ringMesh, 1, new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0), "ground");
+		tempArray.push(ringParticle);
+		//set position to the given position
+		ringMesh.position.set(position.x, position.y, position.z);
+		ringMesh.rotation.x=Math.PI/2;
+		scene.add(ringParticle.mesh);
+	
+		//create a generator
+		this._generator = particleSystem.makeGenerator(tempArray, noOfCylinders+noOfSpheres+1, position);
+		//set the particle system to active
 		this._isActive = true;
 	}
-	
+	//method should occur every frame, updates each interaction particle
 	particleInteracting = function(){
 		if(this._isActive){
 			for(var i=0;i<this._generator.noOfParticles;i++){
-				if(this._generator.particleArray[i].lifetime<=0){
-						this._generator.particleArray[i].mesh.position.y = this._generator.position.y;
-						this._generator.particleArray[i].lifetime = this._generator.particleArray[i].maxLifetime;
-					}
-					this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
-					
-					this._generator.particleArray[i].lifetime -= 0.1;
+				switch(this._generator.particleArray[i].meshType){
+					case "vertical":
+						if(this._generator.particleArray[i].lifetime<=0){
+							this._generator.particleArray[i].mesh.position.y = this._generator.position.y;
+							this._generator.particleArray[i].lifetime = this._generator.particleArray[i].maxLifetime;
+						}
+						this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
+						
+						this._generator.particleArray[i].lifetime -= 0.1;
+						break;
+						
+					case "ground":
+						if(this._generator.particleArray[i].mesh.scale.x<=0){
+							this._generator.particleArray[i].mesh.scale.set(1,1,1);
+						}
+						this._generator.particleArray[i].mesh.scale.x -= 0.05;
+						this._generator.particleArray[i].mesh.scale.y -= 0.05;
+						this._generator.particleArray[i].mesh.scale.z -= 0.05;
+						break;
+						
+					default:
+						break;
+				}
 			}
-			
-			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
 		}
 	}
+	
+	//function to destory particle generator and remove it from the scene
+	destroy = function(){
+		//loop through particle array and dispose of all individual particles
+		for(var i=0;i<this._generator.noOfParticles;i++){
+			this._generator.particleArray[i].mesh.geometry.dispose();
+			this._generator.particleArray[i].mesh.material.dispose();
+			scene.remove(this._generator.particleArray[i].mesh);
+		}
+		//finally, clear the array
+		this._generator.particleArray.clear;
+	}
 }//end interactionA
+
+/*
+##############################################################################
+*/
 
 //double helix particle
 class Helix{
@@ -332,11 +547,13 @@ class Helix{
 			}else{
 				theta+=2*Math.PI/noOfParticles;
 			}
-			
-			var icoMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.04+0.04), new THREE.MeshLambertMaterial({color: 0x663A82,emissive:0x663A82, emissiveIntensity: 0.9}));
+			//buffer geo used as geo will be converted anyway
+			//lambert material used to allow emissive texture
+			var icoMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*0.04+0.04), new THREE.MeshLambertMaterial({color: 0x663A82,emissive:0x663A82, emissiveIntensity: 0.9}));
+			//mesh,lifetime,rotation,speed,type
 			var particle = particleSystem.makeParticle(icoMesh, 20, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0));
 			tempArray.push(particle);
-			//apply positive or negative theta based on the value of i
+			//apply positive or negative theta based on the value of i-- creates two helix shape particles
 			if(i%2==0){
 				tempArray[i].mesh.position.set(position.x + this._radius*Math.cos(theta), position.y+theta, position.z + this._radius*Math.sin(theta));
 			}else{
@@ -344,13 +561,17 @@ class Helix{
 			}
 			scene.add(tempArray[i].mesh);
 		}
-		
-		this._ringMeshA = new THREE.Mesh(new THREE.TorusGeometry(this._radius, 0.05, 3, noOfParticles, 2*Math.PI/6), new THREE.MeshLambertMaterial({color: 0x663A82, emissive:0x663A82, emissiveIntensity: 0.9}));
+		//buffer geo used as geo will be converted anyway
+		//lambert material used to allow emissive texture
+		this._ringMeshA = new THREE.Mesh(new THREE.TorusBufferGeometry(this._radius, 0.05, 3, noOfParticles, 2*Math.PI/6), new THREE.MeshLambertMaterial({color: 0x663A82, emissive:0x663A82, emissiveIntensity: 0.9}));
+		//set position to the given position
 		this._ringMeshA.position.set(position.x,position.y,position.z);
 		this._ringMeshA.rotation.x=Math.PI/2;
 		scene.add(this._ringMeshA);
-		
-		this._ringMeshB = new THREE.Mesh(new THREE.TorusGeometry(this._radius, 0.05, 3, noOfParticles, 2*Math.PI/6), new THREE.MeshLambertMaterial({color: 0x663A82, emissive:0x663A82, emissiveIntensity: 0.9}));
+		//buffer geo used as geo will be converted anyway
+		//lambert material used to allow emissive texture
+		this._ringMeshB = new THREE.Mesh(new THREE.TorusBufferGeometry(this._radius, 0.05, 3, noOfParticles, 2*Math.PI/6), new THREE.MeshLambertMaterial({color: 0x663A82, emissive:0x663A82, emissiveIntensity: 0.9}));
+		//set position to the given position
 		this._ringMeshB.position.set(position.x,position.y,position.z);
 		this._ringMeshB.rotation.x=Math.PI/2;
 		this._ringMeshB.rotation.z=Math.PI;
@@ -359,7 +580,7 @@ class Helix{
 		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles, position);
 		this._isActive = true;
 	}
-	
+	//method should occur every frame, updates each helix particle
 	particleInteracting = function(){
 		if(this._isActive){
 			for(var i=0;i<this._generator.noOfParticles;i++){
@@ -372,11 +593,36 @@ class Helix{
 			}
 			this._ringMeshA.rotation.z -= 2*Math.PI/(this._generator.noOfParticles+13);
 			this._ringMeshB.rotation.z -= 2*Math.PI/(this._generator.noOfParticles+13);
-			
-			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
 		}
 	}
+	
+	//function to destory particle generator and remove it from the scene
+	destroy = function(){
+		//loop through particle array and dispose of all individual particles
+		for(var i=0;i<this._generator.noOfParticles;i++){
+			this._generator.particleArray[i].mesh.geometry.dispose();
+			this._generator.particleArray[i].mesh.material.dispose();
+			scene.remove(this._generator.particleArray[i].mesh);
+		}
+		
+		//remove additional meshes outside of array
+		this._ringMeshA.geometry.dispose();
+		this._ringMeshA.material.dispose();
+		scene.remove(this._ringMeshA);
+		
+		this._ringMeshB.geometry.dispose();
+		this._ringMeshB.material.dispose();
+		scene.remove(this._ringMeshB);
+		//finally, clear the array
+		this._generator.particleArray.clear;
+	}
 }//end helix
+
+/*
+##############################################################################
+*/
 
 //cylindrical outline
 class CylindricalSparkles{
@@ -405,18 +651,22 @@ class CylindricalSparkles{
 			}else{
 				theta+=2*Math.PI/(noOfParticles/4);
 			}
-			
-			var icoMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.1+0.04), new THREE.MeshLambertMaterial({color: 0x663A82,emissive:0x663A82, emissiveIntensity: 0.9}));
+			//buffer geo used as geo will be converted anyway
+			//lambert material used to allow emissive texture
+			var icoMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*0.1+0.04), new THREE.MeshLambertMaterial({color: 0x663A82,emissive:0x663A82, emissiveIntensity: 0.9}));
+			//mesh,lifetime,rotation,speed
 			var particle = particleSystem.makeParticle(icoMesh, Math.random()*2+1, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0));
 			tempArray.push(particle);
+			//set circular position around the given position
 			tempArray[i].mesh.position.set(position.x + this._radius*Math.cos(theta), position.y+Math.random()*3, position.z + this._radius*Math.sin(theta));
 			scene.add(tempArray[i].mesh);
 		}
-		
+		//create a generator
 		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles, position);
+		//set the particle system to active
 		this._isActive = true;
 	}
-	
+	//method should occur every frame, updates each interaction particle
 	particleInteracting = function(){
 		if(this._isActive){
 			for(var i=0;i<this._generator.noOfParticles;i++){
@@ -429,11 +679,27 @@ class CylindricalSparkles{
 				
 				this._generator.particleArray[i].lifetime -= 0.1;
 			}
-			
-			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
 		}
 	}
+	
+	//function to destory particle generator and remove it from the scene
+	destroy = function(){
+		//loop through particle array and dispose of all individual particles
+		for(var i=0;i<this._generator.noOfParticles;i++){
+			this._generator.particleArray[i].mesh.geometry.dispose();
+			this._generator.particleArray[i].mesh.material.dispose();
+			scene.remove(this._generator.particleArray[i].mesh);
+		}
+		//finally, clear the array
+		this._generator.particleArray.clear;
+	}
 }//end cylindricalSparkles
+
+/*
+##############################################################################
+*/
 
 //beam particle
 class Beam{
@@ -462,10 +728,15 @@ class Beam{
 			}else{
 				theta+=2*Math.PI/noOfBeams;
 			}
+			//set thickness of this cylinder
 			var thinkness = Math.random()*0.03+0.02;
-			var cylinderMesh = new THREE.Mesh(new THREE.CylinderGeometry(thinkness,thinkness,Math.random()*4.9+0.1,4), new THREE.MeshBasicMaterial({color:0x663A82, transparent:true, opacity: 0.6}));
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var cylinderMesh = new THREE.Mesh(new THREE.CylinderBufferGeometry(thinkness,thinkness,Math.random()*4.9+0.1,4), new THREE.MeshBasicMaterial({color:0x663A82, transparent:true, opacity: 0.6}));
+			//mesh,lifetime,rotation,speed,type
 			var particle = particleSystem.makeParticle(cylinderMesh, Math.random()*2+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0), "cylinder");
 			tempArray.push(particle);
+			//set circular position around the given position
 			tempArray[i].mesh.position.set(position.x + this._radius*Math.cos(theta), position.y+Math.random()*3, position.z + this._radius*Math.sin(theta));
 			scene.add(tempArray[i].mesh);
 		}
@@ -478,10 +749,13 @@ class Beam{
 			}else{
 				theta+=2*Math.PI/(noOfOrbs/4);
 			}
-			
-			var icoMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*0.1+0.04), new THREE.MeshLambertMaterial({color: 0x663A82,emissive:0x663A82, emissiveIntensity: 0.9}));
+			//buffer geo used as geo will be converted anyway
+			//lambert material used to allow emissive texture
+			var icoMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*0.1+0.04), new THREE.MeshLambertMaterial({color: 0x663A82,emissive:0x663A82, emissiveIntensity: 0.9}));
+			//mesh,lifetime,rotation,speed,type
 			var particle = particleSystem.makeParticle(icoMesh, Math.random()*2+2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0), "sphere");
 			tempArray.push(particle);
+			//set circular position around the given position
 			tempArray[i].mesh.position.set(position.x + this._radius*Math.cos(theta), position.y+Math.random()*3, position.z + this._radius*Math.sin(theta));
 			scene.add(tempArray[i].mesh);
 		}
@@ -494,20 +768,29 @@ class Beam{
 			}else{
 				theta+=2*Math.PI/noOfToruses;
 			}
-			
-			var torMesh = new THREE.Mesh(new THREE.TorusGeometry(this._radius*1.2, 0.05, 3, 10, Math.random()*(2*Math.PI/5*2)+2*Math.PI/5), new THREE.MeshBasicMaterial({color:0x663A82, transparent:true, opacity: 0.6}));
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var torMesh = new THREE.Mesh(new THREE.TorusBufferGeometry(this._radius*1.2, 0.05, 3, 10, Math.random()*(2*Math.PI/5*2)+2*Math.PI/5), new THREE.MeshBasicMaterial({color:0x663A82, transparent:true, opacity: 0.6}));
+			//mesh,lifetime,rotation,speed,type
 			var particle = particleSystem.makeParticle(torMesh, 1, new THREE.Vector3(0,0,Math.random()*0.49+0.01), new THREE.Vector3(0,0,0), "torus");
 			tempArray.push(particle);
+			//set random position around the given position
 			tempArray[i].mesh.position.set(position.x,position.y + Math.random()*4.9+0.1,position.z);
+			//set random rotation
 			tempArray[i].mesh.rotation.set(Math.PI/2,0,Math.random()*2*Math.PI);
 			scene.add(tempArray[i].mesh);
 		}
 		
 		//create main beam
+		//set uniform thickness
 		var thinkness = 0.6;
-		var beamMesh = new THREE.Mesh(new THREE.CylinderGeometry(thinkness,thinkness,15, 6), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity: 0.6}));
+		//buffer geo used as geo will be converted anyway
+		//basic material used to save processing power
+		var beamMesh = new THREE.Mesh(new THREE.CylinderBufferGeometry(thinkness,thinkness,15, 6), new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity: 0.6}));
+		//mesh,lifetime,rotation,speed,type
 		var particle = particleSystem.makeParticle(beamMesh, 2, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.2+0.1,0), "beam");
 		tempArray.push(particle);
+		//set position based on the given position
 		tempArray[i].mesh.position.set(position.x, position.y-10, position.z);
 		scene.add(tempArray[i].mesh);
 		
@@ -515,7 +798,7 @@ class Beam{
 		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles, position);
 		this._isActive = true;
 	}
-	
+	//method should occur every frame, updates each beam particle
 	particleInteracting = function(){
 		if(this._isActive){
 			for(var i=0;i<this._generator.noOfParticles;i++){
@@ -542,15 +825,28 @@ class Beam{
 						this._generator.particleArray[i].lifetime -= 0.1;
 						break;
 				}
-				
-				
-				
 			}
-			
-			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
 		}
 	}
+	
+	//function to destory particle generator and remove it from the scene
+	destroy = function(){
+		//loop through particle array and dispose of all individual particles
+		for(var i=0;i<this._generator.noOfParticles;i++){
+			this._generator.particleArray[i].mesh.geometry.dispose();
+			this._generator.particleArray[i].mesh.material.dispose();
+			scene.remove(this._generator.particleArray[i].mesh);
+		}
+		//finally, clear the array
+		this._generator.particleArray.clear;
+	}
 }//end beam
+
+/*
+##############################################################################
+*/
 
 class Breeze{
 	constructor(radius){
@@ -578,11 +874,13 @@ class Breeze{
 			}else{
 				theta+=2*Math.PI/noOfParticles;
 			}
-			
-			var icoMesh = new THREE.Mesh(new THREE.SphereGeometry(0.25,6,6), new THREE.MeshBasicMaterial({color: 0xebebeb}));
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var icoMesh = new THREE.Mesh(new THREE.SphereBufferGeometry(0.25,6,6), new THREE.MeshBasicMaterial({color: 0xebebeb}));
+			//mesh,lifetime,rotation,speed,type
 			var particle = particleSystem.makeParticle(icoMesh, 20, new THREE.Vector3(0,0,0), new THREE.Vector3(0.05,Math.random()*0.4+0.1,0),"wave");
 			tempArray.push(particle);
-			//apply positive or negative theta based on the value of i
+			//set wave position based on the given position
 			tempArray[i].mesh.position.set(position.x + theta, position.y+this._radius*Math.sin(theta), position.z);
 			tempArray[i].mesh.scale.set(0.05,0.05,0.05);
 			scene.add(tempArray[i].mesh);
@@ -590,20 +888,25 @@ class Breeze{
 		
 		//create 3 lines that move randomly
 		for(var i=noOfParticles; i<noOfParticles+3;i++){
-			var lineMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.01,Math.random()*3+1,6), new THREE.MeshBasicMaterial({color: 0xebebeb}));
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var lineMesh = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.02,0.02,Math.random()*1.5+1,6), new THREE.MeshBasicMaterial({color: 0xebebeb}));
+			//mesh,lifetime,rotation,speed,type
 			var particle = particleSystem.makeParticle(lineMesh, 20, new THREE.Vector3(0,0,0), new THREE.Vector3(Math.random()*0.04+0.01,Math.random()*0.4+0.1,0), "line");
 			tempArray.push(particle);
-			//apply positive or negative theta based on the value of i
+			//set random position around the given position
 			tempArray[i].mesh.position.set(position.x+Math.random()*2, position.y+Math.random()*2-1, position.z);
 			tempArray[i].mesh.rotation.set(Math.PI/2,0,Math.PI/2);
 			scene.add(tempArray[i].mesh);
 		}
 		
-		noOfParticles+=3;
+		noOfParticles+=3; //add the 3 lines to the total
+		//create a generator
 		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles, position);
+		//set the particle system to active
 		this._isActive = true;
 	}
-	
+	//method should occur every frame, updates each breeze particle
 	particleInteracting = function(){
 		if(this._isActive){
 			for(var i=0;i<this._generator.noOfParticles;i++){
@@ -639,8 +942,186 @@ class Breeze{
 				this._generator.particleArray[i].mesh.position.x += this._generator.particleArray[i].velocity.x;
 				
 			}
-			
-			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleInteracting.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
 		}
 	}
+	
+	//function to destory particle generator and remove it from the scene
+	destroy = function(){
+		//loop through particle array and dispose of all individual particles
+		for(var i=0;i<this._generator.noOfParticles;i++){
+			this._generator.particleArray[i].mesh.geometry.dispose();
+			this._generator.particleArray[i].mesh.material.dispose();
+			scene.remove(this._generator.particleArray[i].mesh);
+		}
+		//finally, clear the array
+		this._generator.particleArray.clear;
+	}
 }//end breeze
+
+/*
+##############################################################################
+*/
+
+class Sparkles{
+	constructor(){
+		this._generator = null;
+	}
+	
+	get isActive(){
+		return this._isActive;
+	}
+	
+	set isActive(active){
+		this._isActive = active;
+	}
+	
+	initialiseSparkles(noOfParticles, position){
+		var tempArray = [];
+		
+		for(var i=0; i<noOfParticles;i++){
+			//buffer geo used as geo will be converted anyway
+			//lambert material used to allow emissive texture
+			var sparkleMesh = new THREE.Mesh(new THREE.TorusBufferGeometry(Math.random()*0.05+0.05, 0.05, Math.random()*4+3,Math.random()*4+3,Math.random()*(2*Math.PI)),new THREE.MeshLambertMaterial({color: 0xffffff,transparent:true, opacity: 0.75, emissive: 0xffffff}));
+			//mesh,lifetime,rotation,speed
+			var particle = particleSystem.makeParticle(sparkleMesh, Math.random()*5+2, new THREE.Vector3(Math.random()*0.06-0.03,Math.random()*0.06-0.03,Math.random()*0.06-0.03), new THREE.Vector3(0,Math.random()*0.1+0.01,0));
+			tempArray.push(particle);
+			//set random position around the given position
+			tempArray[i].mesh.position.set(position.x+Math.random()*8-4,position.y+Math.random()*8,position.z+Math.random()*8-4);
+			scene.add(tempArray[i].mesh);
+		}
+		
+		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles, position);
+		this._isActive = true;
+	}
+	//method should occur every frame, updates each sparkle particle
+	particleSparkles = function(){
+		if(this._isActive){
+			for(var i=0;i<this._generator.noOfParticles;i++){
+				this._generator.particleArray[i].mesh.rotation.x += this._generator.particleArray[i].rotation.x;
+				this._generator.particleArray[i].mesh.rotation.y += this._generator.particleArray[i].rotation.y;
+				this._generator.particleArray[i].mesh.rotation.z += this._generator.particleArray[i].rotation.z;
+			}
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleSparkles.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
+		}
+	}
+	
+	//function to destory particle generator and remove it from the scene
+	destroy = function(){
+		//loop through particle array and dispose of all individual particles
+		for(var i=0;i<this._generator.noOfParticles;i++){
+			this._generator.particleArray[i].mesh.geometry.dispose();
+			this._generator.particleArray[i].mesh.material.dispose();
+			scene.remove(this._generator.particleArray[i].mesh);
+		}
+		//finally, clear the array
+		this._generator.particleArray.clear;
+	}
+}//end sparkles
+
+/*
+##############################################################################
+*/
+
+class SparkExplosion{
+	constructor(){
+		this._generator = null;
+	}
+	
+	get isActive(){
+		return this._isActive;
+	}
+	
+	set isActive(active){
+		this._isActive = active;
+	}
+	
+	initialiseSparkExplosion(noOfParticles, position){
+		var tempArray = [];
+		
+		for(var i=0;i<noOfParticles;i++){
+			//buffer geo used as geo will be converted anyway
+			//lambert material used to allow emissive texture
+			var sparkMesh = new THREE.Mesh(new THREE.ConeBufferGeometry(Math.random()*0.04+0.01, 0.25, 3, 1), new THREE.MeshLambertMaterial({color: 0x8A2BE2, emissive: 0x8A2BE2, emissiveIntensity: 0.9}));
+			//mesh,lifetime,rotation,speed,type
+			var particle = particleSystem.makeParticle(sparkMesh, Math.random()*5+6, new THREE.Vector3(0,0,0), new THREE.Vector3(Math.random()*0.5-0.25,Math.random()*0.4+0.1,Math.random()*0.5-0.25), "spark");
+			tempArray.push(particle);
+			//set position to the given position
+			tempArray[i].mesh.position.set(position.x,position.y,position.z);
+			tempArray[i].mesh.rotation.set(Math.PI,0,0);
+			scene.add(tempArray[i].mesh);
+		}
+		
+		var noOfSmokeParts = 50; //fixed number of smoke particles
+		
+		for(var i=noOfParticles;i<noOfParticles+noOfSmokeParts;i++){
+			//buffer geo used as geo will be converted anyway
+			//basic material used to save processing power
+			var expMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*1.4+0.1), new THREE.MeshBasicMaterial({color: 0x8A2BE2,transparent:true, opacity: 0.75}));
+			//mesh,lifetime,rotation,speed,type
+			var particle = particleSystem.makeParticle(expMesh, Math.random()*3+1, new THREE.Vector3(Math.random()*0.02-0.01,Math.random()*0.02-0.01,Math.random()*0.02-0.01), new THREE.Vector3(Math.random()*0.2-0.1,Math.random()*0.2+0.1,Math.random()*0.2-0.1), "smoke");
+			tempArray.push(particle);
+			//set position to the given position
+			tempArray[i].mesh.position.set(position.x,position.y,position.z);
+			scene.add(tempArray[i].mesh);
+		}
+		//create a generator
+		this._generator = particleSystem.makeGenerator(tempArray, noOfParticles+noOfSmokeParts, position);
+		//set the particle system to active
+		this._isActive = true;
+	}
+	//method should occur every frame, updates each spark explosion particle
+	particleSparkExplosion = function(){
+		if(this._isActive){
+			for(var i=0;i<this._generator.noOfParticles;i++){
+				if(this._generator.particleArray == null){
+					this._generator.particleArray.clear;
+				}
+				
+				if(this._generator.particleArray[i].lifetime<=0){
+					this._generator.particleArray[i].mesh.geometry.dispose();
+					this._generator.particleArray[i].mesh.material.dispose();
+					scene.remove(this._generator.particleArray[i].mesh);
+				}
+				if(this._generator.particleArray[i] != null){
+					switch(this._generator.particleArray[i].meshType){
+						case "spark":
+							this._generator.particleArray[i].velocity.y -= 0.01/*drag*/;
+							this._generator.particleArray[i].mesh.position.x += this._generator.particleArray[i].velocity.x;
+							this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
+							this._generator.particleArray[i].mesh.position.z += this._generator.particleArray[i].velocity.z;
+							break;
+							
+						case "smoke":
+							if(this._generator.particleArray[i].lifetime<=this._generator.particleArray[i].maxLifetime-1){
+								this._generator.particleArray[i].mesh.material.color.sub(new THREE.Color(0x222222));
+								if(this._generator.particleArray[i].mesh.scale.x>0){
+									this._generator.particleArray[i].mesh.scale.x-=0.025;
+									this._generator.particleArray[i].mesh.scale.y-=0.025;
+									this._generator.particleArray[i].mesh.scale.z-=0.025;
+								}
+							}
+							
+							break;
+							
+						default:
+							//do nothing
+							break;
+					}
+					//update position
+					this._generator.particleArray[i].mesh.position.x += this._generator.particleArray[i].velocity.x;
+					this._generator.particleArray[i].mesh.position.y += this._generator.particleArray[i].velocity.y;
+					this._generator.particleArray[i].mesh.position.z += this._generator.particleArray[i].velocity.z;
+					//decrease lifetime
+					this._generator.particleArray[i].lifetime -= 0.1;
+				}
+			}
+			//ensure this function runs every frame
+			requestAnimationFrame(this.particleSparkExplosion.bind(this)); //bind the request to the object instance to allow use of 'this' keyword
+		}
+	}
+	
+	//no destroy method as explosions are self destructive
+}//end spark explosion
