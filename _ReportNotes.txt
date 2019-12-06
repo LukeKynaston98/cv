@@ -1,0 +1,3 @@
+REPORT NOTES
+- To save computational power, particles were made using basic materials and a more 'flat' style
+- Preferable to run on Android (Apple doesn't load)
