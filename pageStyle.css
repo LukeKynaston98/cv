@@ -1,3 +1,7 @@
+#timer{
+	
+}
+
 #info {
 	position: absolute;
 	top: 5vh; /*325px*/
@@ -29,7 +33,7 @@
 
 #tutorial{
 	width:20%;
-	height:30vh;
+	height:40vh;
 	position:absolute;
 	margin-left:35%;
 	margin-top:15vh;
