@@ -262,7 +262,7 @@ function drawCountdown()
 
 function clearCountdown()
 {
-    document.getElementById("info").innerHTML = "";
+    //document.getElementById("info").innerHTML = "";
     //document.getElementById("info").id = "d";
 }
 
