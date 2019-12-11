@@ -47,8 +47,8 @@ lightPoint2.castShadow = true;
 lightPoint2.shadow.mapSize.width = 1024;
 lightPoint2.shadow.mapSize.height = 1024;
 lightPoint2.shadow.camera.near = 0.5;
-lightPoint2.shadow.camera.far = 75;
-lightPoint2.shadow.radius = 0;
+lightPoint2.shadow.camera.far = 750;
+lightPoint2.shadow.radius = 9;
 lightPoint2.shadowDarkness = 1;
 
 /** 
@@ -79,22 +79,26 @@ scene.add(ceilingMesh);
 
 //Wall meshes
 //Back wall
-var backWallMesh = new THREE.Mesh(new THREE.PlaneGeometry(100,50), new THREE.MeshLambertMaterial({color: 0x999999, side:THREE.DoubleSide}));
+var backWallMesh = new THREE.Mesh(new THREE.PlaneGeometry(100,50, 16, 16), new THREE.MeshLambertMaterial({color: 0x999999, side:THREE.DoubleSide}));
 backWallMesh.position.set(0,20,-50);
+backWallMesh.receiveShadow = true;
 scene.add(backWallMesh);
 //Left wall
-var leftWallMesh = new THREE.Mesh(new THREE.PlaneGeometry(100,50), new THREE.MeshLambertMaterial({color: 0x999999, side:THREE.DoubleSide}));
+var leftWallMesh = new THREE.Mesh(new THREE.PlaneGeometry(100,50, 16, 16), new THREE.MeshLambertMaterial({color: 0x999999, side:THREE.DoubleSide}));
 leftWallMesh.position.set(-50,20,0);
 leftWallMesh.rotation.set(0,Math.PI/2,0);
+leftWallMesh.receiveShadow = true;
 scene.add(leftWallMesh);
 //front wall
-var frontWallMesh = new THREE.Mesh(new THREE.PlaneGeometry(100,50), new THREE.MeshLambertMaterial({color: 0x999999, side:THREE.DoubleSide}));
+var frontWallMesh = new THREE.Mesh(new THREE.PlaneGeometry(100,50, 16, 16), new THREE.MeshLambertMaterial({color: 0x999999, side:THREE.DoubleSide}));
 frontWallMesh.position.set(0,20,50);
+frontWallMesh.receiveShadow = true;
 scene.add(frontWallMesh);
 //right wall
-var rightWallMesh = new THREE.Mesh(new THREE.PlaneGeometry(100,50), new THREE.MeshLambertMaterial({color: 0x999999, side:THREE.DoubleSide}));
+var rightWallMesh = new THREE.Mesh(new THREE.PlaneGeometry(100,50, 16, 16), new THREE.MeshLambertMaterial({color: 0x999999, side:THREE.DoubleSide}));
 rightWallMesh.position.set(50,20,0);
 rightWallMesh.rotation.set(0,Math.PI/2,0);
+rightWallMesh.receiveShadow = true;
 scene.add(rightWallMesh);
 
 /**
@@ -132,11 +136,11 @@ FUNCTIONALITY
     **/
 
     //ENABLES MOUSE CONTROLS//
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.25;
-    controls.screenSpacePanning = false;
-	//var controls = new THREE.DeviceOrientationControls(camera);
+    //var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    //controls.enableDamping = true;
+    //controls.dampingFactor = 0.25;
+    //controls.screenSpacePanning = false;
+	var controls = new THREE.DeviceOrientationControls(camera);
 
     /**
     END DEBUG
@@ -370,7 +374,7 @@ function makeClock(position, rotation){
 	});
 	var clockFaceMesh = new THREE.Mesh(clockFaceGeometry,clockFaceMaterial);
 	//set shadow relationships
-	clockFaceMesh.castShadow = true;
+	clockFaceMesh.castShadow = false;
 	clockFaceMesh.receiveShadow = true;
 	//add to scene
 	scene.add(clockFaceMesh);
@@ -381,7 +385,7 @@ function makeClock(position, rotation){
 	var clockEdgeMaterial = new THREE.MeshLambertMaterial({color:0xa1a1a1});
 	var clockEdgeMesh = new THREE.Mesh(clockEdgeGeometry,clockEdgeMaterial);
 	//set shadow relationships
-	clockEdgeMesh.castShadow = true;
+	clockEdgeMesh.castShadow = false;
 	clockEdgeMesh.receiveShadow = true;
 	//set parent to clock mesh
 	clockEdgeMesh.parent = clockFaceMesh;
@@ -729,7 +733,7 @@ function makeLights(position, rotation){
 	var lightMaterial = new THREE.MeshLambertMaterial({color: 0xcccccc});
 	var lightMesh = new THREE.Mesh(lightGeometry,lightMaterial);
 	//set shadow relationships
-	lightMesh.castShadow = true;
+	lightMesh.castShadow = false;
 	lightMesh.receiveShadow = false;
 	//add to scene
 	scene.add(lightMesh);
@@ -751,7 +755,7 @@ function makeLights(position, rotation){
 		var supportMaterial = new THREE.MeshLambertMaterial({color: 0x1f1f1f});
 		var supportMesh = new THREE.Mesh(supportGeometry,supportMaterial);
 		//set shadow relationships
-		supportMesh.castShadow = true;
+		supportMesh.castShadow = false;
 		supportMesh.receiveShadow = false;
 		//set parent to light mesh
 		supportMesh.parent=lightMesh;
@@ -991,7 +995,7 @@ makeMug(new THREE.Vector3(-43,5,20), new THREE.Vector3(0,Math.PI/5*4,0));
 makeMug(new THREE.Vector3(-42,5,13), new THREE.Vector3(0,Math.PI/15*8,0));
 
 //make clocks
-makeClock(new THREE.Vector3(-5,17,-49), new THREE.Vector3(0,0,0));
+makeClock(new THREE.Vector3(-5,17,-49.75), new THREE.Vector3(0,0,0));
 
 //make staplers
 makeStapler(new THREE.Vector3(-12,4.3,-20), new THREE.Vector3(0,-Math.PI/6,0));
@@ -1048,10 +1052,10 @@ makePaperStack(new THREE.Vector3(47,4.25,-13), new THREE.Vector3(0,Math.PI/5,0))
 makePaperStack(new THREE.Vector3(48,4.25,-8), new THREE.Vector3(0,Math.PI/3,0));
 
 //make book
-makeBook(new THREE.Vector3(4,4.5,-2), new THREE.Vector3(0,Math.PI/4,0));
-makeBook(new THREE.Vector3(-20,4.5,41), new THREE.Vector3(0,Math.PI/8,0));
-makeBook(new THREE.Vector3(-25,4.5,43), new THREE.Vector3(0,Math.PI/3,0));
-makeBook(new THREE.Vector3(43,4.5,-20), new THREE.Vector3(0,Math.PI/4,0));
+makeBook(new THREE.Vector3(4,4.35,-2), new THREE.Vector3(0,Math.PI/4,0));
+makeBook(new THREE.Vector3(-20,4.35,41), new THREE.Vector3(0,Math.PI/8,0));
+makeBook(new THREE.Vector3(-25,4.35,43), new THREE.Vector3(0,Math.PI/3,0));
+makeBook(new THREE.Vector3(43,4.35,-20), new THREE.Vector3(0,Math.PI/4,0));
 
 //desk fan
 makeDeskFan(new THREE.Vector3(16,4.25,-45), new THREE.Vector3(0,Math.PI/2,0));
