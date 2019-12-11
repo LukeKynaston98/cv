@@ -596,7 +596,7 @@ class Helix{
 			}
 			//buffer geo used as geo will be converted anyway
 			//lambert material used to allow emissive texture
-			var icoMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*0.04+0.04), new THREE.MeshLambertMaterial({color: 0x663A82,emissive:0x663A82, emissiveIntensity: 0.9}));
+			var icoMesh = new THREE.Mesh(new THREE.IcosahedronBufferGeometry(Math.random()*0.05+0.1), new THREE.MeshLambertMaterial({color: 0x663A82,emissive:0x663A82, emissiveIntensity: 0.9}));
 			//mesh,lifetime,rotation,speed,type
 			var particle = particleSystem.makeParticle(icoMesh, 20, new THREE.Vector3(0,0,0), new THREE.Vector3(0,Math.random()*0.4+0.1,0));
 			tempArray.push(particle);
