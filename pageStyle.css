@@ -19,6 +19,7 @@
 	position: absolute;
 	text-align: center;
 	z-index: 100;
+	font-size: 64px;
 }
 
 body {
