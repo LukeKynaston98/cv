@@ -196,8 +196,8 @@ function onMouseMove(event)
 
 function update()
 {
-	//raycaster.set(camera.getWorldPosition(), camera.getWorldDirection());
-	raycaster.setFromCamera( new THREE.Vector2(), camera );
+	// raycaster.set(camera.getWorldPosition(), camera.getWorldDirection());
+	raycaster.setFromCamera( new THREE.Vector2(), camera );  
 	var intersects = raycaster.intersectObjects(scene.children);
 	
 	// Check for mouse hovering over active target
@@ -231,16 +231,15 @@ function update()
 	}
 	
 	if (gameCountdownTimer > 0)
-    {
-        gameCountdownTimer -= .025;
-        drawCountdown();
-
-        if (gameCountdownTimer < 0 )
-        {
-            isGameReady = true;
-            clearCountdown();
-        }
-    }
+	{
+		gameCountdownTimer -= .025;
+		drawCountdown();
+	}
+	else
+	{
+		isGameReady = true;
+		clearCountdown();
+	}
 	
 	renderer.render(scene, camera);
 }
@@ -263,8 +262,8 @@ function drawCountdown()
 
 function clearCountdown()
 {
-    //document.getElementById("info").innerHTML = "";
-    //document.getElementById("info").id = "d";
+    document.getElementById("info").innerHTML = "";
+    // document.getElementById("info").id = "d";
 }
 
 /**
