@@ -271,6 +271,8 @@ function update()
 		}
 	}
 	
+	handleTimer();
+	
 	// Render it
 	renderer.render(scene, camera);
 }
@@ -288,6 +290,8 @@ START USER INTERFACE
 var gameCountdownTimer = 5;
 var isGameReady = false;
 
+var playerTimer = 0;
+var playerTimerIncrement = 0.025;
 /*
 Draw the countdown to the screen
 */
@@ -302,8 +306,12 @@ Clear the countdown from the screen
 function clearCountdown()
 {
     document.getElementById("info").innerHTML = "";
-	document.getElementById("tutorial").innerHTML = "";
-    document.getElementById("tutorial").id = "hidden";
+}
+
+function handleTimer()
+{
+	playerTimer += playerTimerIncrement;
+	document.getElementById("timer").innerHTML = Math.floor(playerTimer);
 }
 
 /**

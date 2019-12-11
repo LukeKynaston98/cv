@@ -1,6 +1,9 @@
 #timer{
 	position:absolute;
-
+	color: #000;
+	width: 20%;
+	margin-left: 5%;
+	font-size: 64px;
 }
 
 #info {
@@ -15,50 +18,6 @@
 	font-size: 64px;
 	background-color: black;
 	opacity: 0.75;
-}
-
-#crosshair{
-	width: 100%;
-	display:block;
-	margin:auto;
-	position: absolute;
-	z-index: 100;
-	top: 60vh; /*325px*/
-}
-
-#crosshair p{
-	text-align: center;
-	font-size: 64px;
-	padding:0;
-}
-
-#tutorial{
-	width:50%;
-	height:40vh;
-	position:absolute;
-	margin-left:20%;
-	margin-top:15vh;
-	text-align: center;
-	padding: 0 5%;
-	background-color: #000;
-	color: #fff;
-}
-
-#tutorial h1{
-	font-size: 24pt;
-}
-
-#tutorial li{
-	/*list-style:none;*/
-	font-size: 10pt;
-	font-family: sans-serif;
-	margin-bottom:0.5em;
-}
-
-#hidden{
-	display: block;
-	position: absolute;
-	background-color: transparent;
 }
 
 body {
