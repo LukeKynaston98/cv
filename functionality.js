@@ -14,6 +14,7 @@ window.addEventListener('mousemove', onMouseMove, false);
 
 // Amount of objects destroyed by player,
 // Amount of time elapsed after countdown
+// Amount of objects to destroy during the game 
 var objectDestroyCount = 0;
 var playerTime = 0;
 var objectDestroyLimit = 5;
@@ -25,6 +26,10 @@ var activeObjectData;
 var activeParticle;
 var explosionParticle;
 
+/* 
+Chooses a random object from the potentialActiveObjectList 
+and sets it to be active 
+*/
 function setRandomActiveObject()
 {
 	var ranObjectData = potentialActiveObjectList[Math.floor(Math.random()*potentialActiveObjectList.length)];
@@ -37,11 +42,17 @@ function setRandomActiveObject()
 	onActiveMeshSetActive(activeObjectData.objectInstance);
 }
 
+/*
+Tell an object to shake during animation frames
+*/
 function setObjectDataToShake(objectData)
 {
 	objectData.bIsShaking = true;
 }
 
+/*
+Dispose of an object and everything related to it
+*/
 function disposeObjectData(objectData)
 {
 	onActiveMeshDestroyed(objectData.objectInstance);
@@ -52,19 +63,24 @@ function disposeObjectData(objectData)
 	objectData.bIsShaking = false;
 }
 
+/*
+Shake an object during the animation frame
+*/
 function shakeObject(objectData)
 {
 	var intensity = objectData.shakeIntensity;
 	
+	// Set a random position based on initial position to create a shake effect
 	objectData.objectInstance.position.set(
 	((Math.random() * intensity) - intensity)/10 + objectData.startPosition.x,
 	((Math.random() * intensity) - intensity)/10 + objectData.startPosition.y,
 	((Math.random() * intensity) - intensity)/10 + objectData.startPosition.z
 	);
-	objectData.shakeIntensity += objectData.shakeIntensity/100;
+	objectData.shakeIntensity += objectData.shakeIntensity/65;
 	
 	if (objectData.shakeIntensity > objectData.shakeMaximum)
 	{
+		// Remove the object once it has finished shaking
 		disposeObjectData(objectData);
 		objectDestroyCount++;
 		
@@ -76,17 +92,24 @@ function shakeObject(objectData)
 			setRandomActiveObject();
 		}
 	}
+	
+	objectData.startPosition.y += 0.035;
 }
 
+/*
+End the game
+*/
 function endGame()
 {
 	// Game over
 }
 
-// Called when the active mesh has been destroyed from shaking too much
+/* 
+Called when the active mesh has been destroyed from shaking too much
+*/
 function onActiveMeshDestroyed(objectInstance)
 {
-	// .. add your code here
+	// Create a random explosion particle effect when the mesh is destroyed
 	var prng = Math.floor(Math.random()*3);
 	switch(prng){
 		case 0:
@@ -117,11 +140,13 @@ function onActiveMeshDestroyed(objectInstance)
 	console.log("MESH DESTROYED");
 }
 
-// Called when the active mesh behins shaking (the player looks at it)
+/*
+Called when the active mesh behins shaking (the player looks at it)
+*/
 function onActiveMeshSetActive(objectInstance)
 {
-	// .. add your code here
-	//particle setup
+	// Particle setup
+	// Create a random highlight particle on the object when it becomes active
 	var prng = Math.floor(Math.random()*4);
 	switch(prng){
 		case 0:
@@ -150,17 +175,19 @@ function onActiveMeshSetActive(objectInstance)
 			break;
 	}
 	
-	
 	console.log("MESH SET TO ACTIVE");
 }
 
+/*
+Marks a mesh when created, determining the functionality of the mesh
+*/
 function setupObject(_worldObject, _shakeIntensity = 0, _bCanShake = false)
 {
 	var objectData = {
 		startPosition: new THREE.Vector3(_worldObject.position.x, _worldObject.position.y, _worldObject.position.z),
 		objectInstance: _worldObject,
 		shakeIntensity: _shakeIntensity,
-		shakeMaximum : 15,
+		shakeMaximum : 8,
 		bIsShaking: false,
 		bCanShake: _bCanShake
 	};
@@ -169,7 +196,9 @@ function setupObject(_worldObject, _shakeIntensity = 0, _bCanShake = false)
 		potentialActiveObjectList.push(objectData);
 }
 
-// returns objectData based on worldObject passed
+/*
+Returns objectData based on worldObject passed
+*/
 function getObjectData(worldObject)
 {
 	for (var i = 0; i < objectDataList.length; i++) 
@@ -180,14 +209,9 @@ function getObjectData(worldObject)
 	return null;
 }
 
-function destroyObject(objectInstance)
-{
-	scene.remove(objectInstance);
-	objectInstance.geometry.dispose();
-	objectInstance.material.dispose();
-	objectInstance = undefined;
-}
-
+/*
+Triggers mouse events based on position
+*/
 function onMouseMove(event)
 {
 	mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
@@ -196,22 +220,24 @@ function onMouseMove(event)
 
 function update()
 {
-	// raycaster.set(camera.getWorldPosition(), camera.getWorldDirection());
+	// Create a ray from the camera
 	raycaster.setFromCamera( new THREE.Vector2(), camera );  
 	var intersects = raycaster.intersectObjects(scene.children);
 	
-	// Check for mouse hovering over active target
+	// Check for mouse hovering over active target via raycasting
 	if (isGameReady)
 	{
 		for (var i = 0; i < intersects.length; i++) 
 		{
 			try
 			{
+				// Get the object data based on object interseect from raycast
 				var obj = getObjectData(intersects[i].object);
 				
 				// Check if the object can shake
 				if (obj.bCanShake && obj == activeObjectData && !obj.bIsShaking)
 				{
+					// Sets the object that the player is looking at to shake
 					console.log("FOUND OBJECT TO SHAKE: " + obj);
 					setObjectDataToShake(obj);
 				}
@@ -226,21 +252,26 @@ function update()
 	{
 		if (potentialActiveObjectList[j].bIsShaking)
 		{
+			// Shake the object that is currently active
 			shakeObject(potentialActiveObjectList[j]);
 		}
 	}
 	
+	// Check if the countdown is still going
 	if (gameCountdownTimer > 0)
 	{
 		gameCountdownTimer -= .025;
 		drawCountdown();
-	}
-	else
-	{
-		isGameReady = true;
-		clearCountdown();
+		
+		if (gameCountdownTimer < 0 )
+		{
+			// Countdown timer has elapsed, game ready to play
+			isGameReady = true;
+			clearCountdown();
+		}
 	}
 	
+	// Render it
 	renderer.render(scene, camera);
 }
 
@@ -252,18 +283,25 @@ END FUNCTIONALITY
 START USER INTERFACE
 **/
 
+// Countdown timer, counting down from x
+// A check to see if the countdown has finished
 var gameCountdownTimer = 5;
 var isGameReady = false;
 
+/*
+Draw the countdown to the screen
+*/
 function drawCountdown()
 {
     document.getElementById("info").innerHTML = Math.floor(gameCountdownTimer+1);
 }
 
+/*
+Clear the countdown from the screen
+*/
 function clearCountdown()
 {
     document.getElementById("info").innerHTML = "";
-    // document.getElementById("info").id = "d";
 }
 
 /**

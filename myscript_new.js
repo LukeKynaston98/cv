@@ -10,29 +10,54 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight); // Size of the 2D projection
 document.body.appendChild(renderer.domElement); // add to the canvas
 
+/** 
+START LIGHTING 
+**/
+
 //Ambient lighting
 var lightAmbient = new THREE.AmbientLight(0x222222);
-lightAmbient.intensity = 5.0;
+lightAmbient.intensity = 2.8;
 scene.add(lightAmbient);
 
 //point light
 var lightPoint1 = new THREE.PointLight(0xffffff);
-lightPoint1.position.set(3,20,3);
+lightPoint1.position.set(-10,18,0);
 lightPoint1.rotation.set(0,-2,0);
-lightPoint1.intensity = 0.8;
-scene.add(lightPoint1);
-
-//Rendering shadow
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+lightPoint1.intensity = 1;
+//scene.add(lightPoint1);
 
 //shadow quality
 lightPoint1.castShadow = true;
 lightPoint1.shadow.mapSize.width = 1024;
 lightPoint1.shadow.mapSize.height = 1024;
 lightPoint1.shadow.camera.near = 0.5;
-lightPoint1.shadow.camera.far = 1000;
-lightPoint1.shadow.radius = 5.0;
+//lightPoint1.shadow.camera.far = 50;
+lightPoint1.shadow.radius = 0;
+lightPoint1.shadowDarkness = 1;
+
+//point light
+var lightPoint2 = new THREE.PointLight(0xffffff);
+lightPoint2.position.set(0,18,0);
+lightPoint2.rotation.set(0,-2,0);
+lightPoint2.intensity = .85;
+scene.add(lightPoint2);
+
+//shadow quality
+lightPoint2.castShadow = true;
+lightPoint2.shadow.mapSize.width = 1024;
+lightPoint2.shadow.mapSize.height = 1024;
+lightPoint2.shadow.camera.near = 0.5;
+lightPoint2.shadow.camera.far = 75;
+lightPoint2.shadow.radius = 0;
+lightPoint2.shadowDarkness = 1;
+
+/** 
+END LIGHTING 
+**/
+
+//Rendering shadow
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 //Floor mesh
 var meshFloor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshLambertMaterial( { color: 0x7788dd, side: THREE.DoubleSide}));
@@ -72,6 +97,30 @@ rightWallMesh.position.set(50,20,0);
 rightWallMesh.rotation.set(0,Math.PI/2,0);
 scene.add(rightWallMesh);
 
+/**
+TEXTURES
+**/
+
+/* LOADS THE COMPUTER MONITOR TEXTURE */
+const textureLoader = new THREE.TextureLoader();
+const textureA = textureLoader.load('texture1.png');
+textureA.encoding = THREE.sRGBEncoding;
+textureA.anisotropy = 16;
+
+/* LOADS THE CLOCK TEXTURE */
+const textureB = textureLoader.load('texture2.png');
+textureB.encoding = THREE.sRGBEncoding;
+textureB.anisotropy = 16;
+
+/* LOADS THE BOOK TEXTURE */
+const textureC = textureLoader.load('texture3.png');
+textureC.encoding = THREE.sRGBEncoding;
+textureC.anisotropy = 16;
+
+/**
+END TEXTURES
+**/
+
 //initialise particle system
 var particleSystem = new ParticleSystem();
 
@@ -83,11 +132,11 @@ FUNCTIONALITY
     **/
 
     //ENABLES MOUSE CONTROLS//
-    /*var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
-    controls.screenSpacePanning = false;*/
-	var controls = new THREE.DeviceOrientationControls(camera);
+    controls.screenSpacePanning = false;
+	//var controls = new THREE.DeviceOrientationControls(camera);
 
     /**
     END DEBUG
@@ -315,7 +364,10 @@ function makeClock(position, rotation){
 	//clock face
 	var clockFaceGeometry = new THREE.CylinderGeometry(2.5,2.5,0.1,8);
 	//Use of basic material to save processing power as no shadows are needed
-	var clockFaceMaterial = new THREE.MeshBasicMaterial({color:0xffffff});
+	//var clockFaceMaterial = new THREE.MeshBasicMaterial({color:0xffffff});
+	var clockFaceMaterial = new THREE.MeshBasicMaterial({
+	map: textureB,
+	});
 	var clockFaceMesh = new THREE.Mesh(clockFaceGeometry,clockFaceMaterial);
 	//set shadow relationships
 	clockFaceMesh.castShadow = true;
@@ -464,7 +516,10 @@ function makeMonitor(position, rotation){
 	//screen
 	var screenGeometry = new THREE.PlaneGeometry(9,5);
 	//Use of basic material to save processing power as no shadows are needed
-	var screenMaterial = new THREE.MeshBasicMaterial({color: 0x0000ff, side: THREE.DoubleSide});
+	// var screenMaterial = new THREE.MeshBasicMaterial({color: 0x0000ff, side: THREE.DoubleSide});
+	var screenMaterial = new THREE.MeshBasicMaterial({
+		map: textureA,
+	});
 	var screenMesh = new THREE.Mesh(screenGeometry,screenMaterial);
 	//set shadow relationships
 	screenMesh.castShadow = true;
@@ -679,6 +734,16 @@ function makeLights(position, rotation){
 	//add to scene
 	scene.add(lightMesh);
 	
+	var lightGeometry2 = new THREE.BoxGeometry(.75,0.125,9.5);
+	//Use of lambert material to generate shadows/reflections while retaining some processing power
+	var lightMaterial2 = new THREE.MeshLambertMaterial({color: 0xffffff, emissive: 0xf5ed82});
+	var lightMesh2 = new THREE.Mesh(lightGeometry2,lightMaterial2);
+	lightMesh2.position.set(0, -.25, 0);
+	//set shadow relationships
+	lightMesh2.castShadow = false;
+	lightMesh2.receiveShadow = false;
+	lightMesh.add(lightMesh2);
+	
 	//supports
 	for(var i=0;i<2;i++){
 		var supportGeometry = new THREE.CylinderGeometry(0.1,0.1,6,8);
@@ -717,7 +782,7 @@ Can shake
 function makePaperStack(position, rotation){
 	var basePaperGeometry = new THREE.BoxGeometry(1.5,0.4,2);
 	//Use of lambert material to generate shadows/reflections while retaining some processing power
-	var basePaperMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
+	var basePaperMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
 	var basePaperMesh = new THREE.Mesh(basePaperGeometry,basePaperMaterial);
 	//set shadow relationships
 	basePaperMesh.castShadow = true;
@@ -751,7 +816,10 @@ function makeBook(position, rotation){
 	for(var i=0;i<2;i++){
 		var faceGeometry = new THREE.BoxGeometry(2,0.1,1.4);
 		//Use of lambert material to generate shadows/reflections while retaining some processing power
-		var faceMaterial = new THREE.MeshLambertMaterial({color: 0x001acc});
+		//var faceMaterial = new THREE.MeshLambertMaterial({color: 0x001acc});
+		var faceMaterial = new THREE.MeshBasicMaterial({
+		map: textureC,
+		});
 		var faceMesh = new THREE.Mesh(faceGeometry,faceMaterial);
 		//set shadow relationships
 		faceMesh.castShadow = true;
