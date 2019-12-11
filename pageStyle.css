@@ -12,6 +12,12 @@
 	opacity: 0.75;
 }
 
+#crosshair{
+	width: 5%;
+	display:block;
+	margin:auto;
+}
+
 body {
 	margin: 0;
 }
