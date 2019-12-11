@@ -1,6 +1,6 @@
 #info {
 	position: absolute;
-	top: 5vh; //325px
+	top: 5vh; /*325px*/
 	width: 100%;
 	text-align: center;
 	z-index: 100;
@@ -18,13 +18,34 @@
 	margin:auto;
 	position: absolute;
 	z-index: 100;
-	top: 60vh; //325px
+	top: 60vh; /*325px*/
 }
 
 #crosshair p{
 	text-align: center;
 	font-size: 64px;
 	padding:0;
+}
+
+#tutorial{
+	width:40%;
+	height:100vh;
+	position:absolute;
+	margin-left:50%;
+	text-align: left;
+	padding: 1em 5%;
+}
+
+#tutorial h1{
+	font-size: 64pt;
+}
+
+#tutorial p{
+	font-size: 20pt;
+}
+
+#tutorial li{
+	/*list-style:none;*/
 }
 
 body {
