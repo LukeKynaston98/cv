@@ -50,6 +50,12 @@
 	margin-bottom:0.5em;
 }
 
+#hidden{
+	display: block;
+	position: absolute;
+	background-color: transparent;
+}
+
 body {
 	margin: 0;
 }
