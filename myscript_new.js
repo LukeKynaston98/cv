@@ -105,10 +105,11 @@ FUNCTIONALITY
     **/
 
     //ENABLES MOUSE CONTROLS//
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    /*var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
-    controls.screenSpacePanning = false;
+    controls.screenSpacePanning = false;*/
+	var controls = new THREE.DeviceOrientationControls(camera);
 
     /**
     END DEBUG
