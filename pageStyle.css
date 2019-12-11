@@ -1,5 +1,6 @@
 #timer{
-	
+	position:absolute;
+
 }
 
 #info {
@@ -35,7 +36,7 @@
 	width:50%;
 	height:40vh;
 	position:absolute;
-	margin-left:15%;
+	margin-left:20%;
 	margin-top:15vh;
 	text-align: center;
 	padding: 0 5%;
