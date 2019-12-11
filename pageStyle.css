@@ -29,23 +29,23 @@
 
 #tutorial{
 	width:40%;
-	height:100vh;
+	height:50vh;
 	position:absolute;
 	margin-left:50%;
+	margin-top:25vh;
 	text-align: left;
-	padding: 1em 5%;
+	padding: 0 5%;
 }
 
 #tutorial h1{
 	font-size: 64pt;
 }
 
-#tutorial p{
-	font-size: 20pt;
-}
-
 #tutorial li{
 	/*list-style:none;*/
+	font-size: 16pt;
+	font-family: sans-serif;
+	margin-bottom:0.5em;
 }
 
 body {
