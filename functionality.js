@@ -196,29 +196,30 @@ function onMouseMove(event)
 
 function update()
 {
-	//raycaster.setFromCamera(mouse, camera);
 	raycaster.set(camera.getWorldPosition(), camera.getWorldDirection());
 	var intersects = raycaster.intersectObjects(scene.children);
 	
 	// Check for mouse hovering over active target
-	for (var i = 0; i < intersects.length; i++) 
+	if (isGameReady)
 	{
-		try
+		for (var i = 0; i < intersects.length; i++) 
 		{
-			var obj = getObjectData(intersects[i].object);
-			
-			// Check if the object can shake
-			if (obj.bCanShake && obj == activeObjectData && !obj.bIsShaking)
+			try
 			{
-				console.log("FOUND OBJECT TO SHAKE: " + obj);
-				setObjectDataToShake(obj);
+				var obj = getObjectData(intersects[i].object);
+				
+				// Check if the object can shake
+				if (obj.bCanShake && obj == activeObjectData && !obj.bIsShaking)
+				{
+					console.log("FOUND OBJECT TO SHAKE: " + obj);
+					setObjectDataToShake(obj);
+				}
+			} catch (exception)
+			{
+				console.log("MISSING OBJECT DATA FOR: " + intersects[i].object + ", IS IT A PARTICLE?");
 			}
-		} catch (exception)
-		{
-			console.log("MISSING OBJECT DATA FOR: " + intersects[i].object + ", IS IT A PARTICLE?");
 		}
 	}
-	
 	// Animate object that needs to shake
 	for (var j = 0; j < potentialActiveObjectList.length; j++) 
 	{
@@ -227,9 +228,43 @@ function update()
 			shakeObject(potentialActiveObjectList[j]);
 		}
 	}
+	
+	if (gameCountdownTimer > 0)
+	{
+		gameCountdownTimer -= .025;
+		drawCountdown();
+	}
+	else
+	{
+		isGameReady = true;
+		clearCountdown();
+	}
+	
 	renderer.render(scene, camera);
 }
 
 /**
 END FUNCTIONALITY
+**/
+
+/**
+START USER INTERFACE
+**/
+
+var gameCountdownTimer = 5;
+var isGameReady = false;
+
+function drawCountdown()
+{
+    document.getElementById("info").innerHTML = Math.floor(gameCountdownTimer+1);
+}
+
+function clearCountdown()
+{
+    document.getElementById("info").innerHTML = "";
+    document.getElementById("info").id = "d";
+}
+
+/**
+END USER INTERFACE
 **/

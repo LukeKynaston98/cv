@@ -76,28 +76,6 @@ scene.add(rightWallMesh);
 var particleSystem = new ParticleSystem();
 
 /**
-START USER INTERFACE
-**/
-
-var gameCountdownTimer = 5;
-var isGameReady = false;
-
-function drawCountdown()
-{
-    document.getElementById("info").innerHTML = Math.floor(gameCountdownTimer);
-}
-
-function clearCountdown()
-{
-    document.getElementById("info").innerHTML = "";
-    document.getElementById("info").id = "d";
-}
-
-/**
-END USER INTERFACE
-**/
-
-/**
 FUNCTIONALITY
 **/
     /**
