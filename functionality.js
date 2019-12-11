@@ -302,6 +302,7 @@ Clear the countdown from the screen
 function clearCountdown()
 {
     document.getElementById("info").innerHTML = "";
+    document.getElementById("tutorial").innerHTML = "";
 }
 
 /**
