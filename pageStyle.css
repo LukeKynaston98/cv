@@ -1,6 +1,6 @@
 #info {
 	position: absolute;
-	top: 150px; //325
+	top: 50px; //325
 	width: 100%;
 	text-align: center;
 	z-index: 100;
@@ -18,7 +18,7 @@
 	margin:auto;
 	position: absolute;
 	z-index: 100;
-	top: 150px; //325
+	top: 50px; //325
 }
 
 #crosshair p{
