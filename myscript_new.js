@@ -1050,13 +1050,13 @@ sparksLight.particleSparks();
 makePaperStack(new THREE.Vector3(-7,4.25,-3), new THREE.Vector3(0,0,0));
 makePaperStack(new THREE.Vector3(47,4.25,-13), new THREE.Vector3(0,Math.PI/5,0));
 makePaperStack(new THREE.Vector3(48,4.25,-8), new THREE.Vector3(0,Math.PI/3,0));
-/*
+
 //make book
 makeBook(new THREE.Vector3(4,4.35,-2), new THREE.Vector3(0,Math.PI/4,0));
 makeBook(new THREE.Vector3(-20,4.35,41), new THREE.Vector3(0,Math.PI/8,0));
-makeBook(new THREE.Vector3(-25,4.35,43), new THREE.Vector3(0,Math.PI/2,0));
+//makeBook(new THREE.Vector3(-25,4.35,43), new THREE.Vector3(0,Math.PI/2,0));
 makeBook(new THREE.Vector3(43,4.35,-20), new THREE.Vector3(0,Math.PI/4,0));
-*/
+
 //desk fan
 makeDeskFan(new THREE.Vector3(16,4.25,-45), new THREE.Vector3(0,Math.PI/2,0));
 //fan breeze particle
