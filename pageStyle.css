@@ -17,8 +17,12 @@
 	display:block;
 	margin:auto;
 	position: absolute;
-	text-align: center;
 	z-index: 100;
+	top: 325px;
+}
+
+#crosshair p{
+	text-align: center;
 	font-size: 64px;
 }
 
