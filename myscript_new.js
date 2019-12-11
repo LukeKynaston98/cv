@@ -1054,7 +1054,7 @@ makePaperStack(new THREE.Vector3(48,4.25,-8), new THREE.Vector3(0,Math.PI/3,0));
 //make book
 makeBook(new THREE.Vector3(4,4.35,-2), new THREE.Vector3(0,Math.PI/4,0));
 makeBook(new THREE.Vector3(-20,4.35,41), new THREE.Vector3(0,Math.PI/8,0));
-makeBook(new THREE.Vector3(-25,4.35,43), new THREE.Vector3(0,Math.PI/7,0));
+makeBook(new THREE.Vector3(-25,4.35,43), new THREE.Vector3(0,Math.PI/2,0));
 makeBook(new THREE.Vector3(43,4.35,-20), new THREE.Vector3(0,Math.PI/4,0));
 
 //desk fan
