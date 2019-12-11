@@ -6,8 +6,15 @@ class ParticleSystem{
 	constructor(){
 		
 	}
-	/*
-	FUNCTION TO CREATE NEW PARTICLES
+	
+	/*CREATE NEW PARTICLES
+	Create a new particle object
+	Mesh- the mesh the particle will use
+	Lifetime- how long the particle will be active for
+	Rotation- the rotation per frame of the particle
+	Velocity- the velocity per frame of the particle
+	
+	returns the created particle
 	*/
 	makeParticle(mesh, lifetime, rotation, velocity){
 		var particle = {
@@ -19,7 +26,17 @@ class ParticleSystem{
 		};
 		return particle;
 	}
-	//override with an additional parameter for mesh type
+	
+	/*CREATE NEW PARTICLES -- OVERRIDE WITH ADDITION OF MESH TYPE
+	Create a new particle object
+	Mesh- the mesh the particle will use
+	Lifetime- how long the particle will be active for
+	Rotation- the rotation per frame of the particle
+	Velocity- the velocity per frame of the particle
+	MeshType- the type of mesh that has been passed
+	
+	returns the created particle
+	*/
 	makeParticle(mesh, lifetime, rotation, velocity, meshType){
 		var particle = {
 			mesh : mesh,
@@ -32,7 +49,14 @@ class ParticleSystem{
 		return particle;
 	}
 	
-	//creates a particle generator that can be iterated through
+	/*CREATE PARTICLE GENERATOR
+	Create a new particle generator that can be iterated though each frame
+	particleArray- the array of created particles
+	noOfParticles- the number of particles in the systemLanguage
+	particlePosition- the starting position of the generator
+	
+	returns the created generator
+	*/
 	makeGenerator(particleArray, noOfParticles, particlePosition){
 		var particleGenerator = {
 			particleArray : particleArray,
@@ -60,7 +84,10 @@ class Smoke{
 		this._isActive = active;
 	}
 	
-	//create a particle generator with created particles
+	/*create a particle generator with created particles
+	noOfParticles- the total number of particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseSmoke(noOfParticles, position){
 		var tempArray = [];
 		//create smoke particles and add them to the generator array before adding them to the scene
@@ -144,7 +171,10 @@ class Sparks{
 		this._isActive = active;
 	}
 	
-	//create a particle generator with created particles
+	/*create a particle generator with created particles
+	noOfParticles- the total number of particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseSparks(noOfParticles, position){
 		var tempArray = [];
 		
@@ -226,7 +256,11 @@ class ExplosionParticle{
 	set isActive(active){
 		this._isActive = active;
 	}
-	//create a generator after creating the particles
+	/*create a particle generator with created particles
+	noOfSmokeParticles- the total number of smoke particles that should be created
+	noOfCloudParticles- the total number of cloud particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseExplosion(noOfSmokeParticles, noOfCloudParticles, position){
 		var tempArray = [];
 		
@@ -330,7 +364,11 @@ class SmallExplosion{
 	set isActive(active){
 		this._isActive = active;
 	}
-	//create particle generator after creating particles
+	/*create a particle generator with created particles
+	noOfSmokeParticles- the total number of smoke particles that should be created
+	noOfCloudParticles- the total number of cloud particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseExplosion(noOfSmokeParticles, noOfCloudParticles, position){
 		var tempArray = [];
 		
@@ -421,7 +459,13 @@ class InteractingParticleA{
 	set isActive(active){
 		this._isActive = active;
 	}
-	
+	/*create a particle generator with created particles
+	noOfCylinders- the total number of cylinder particles that should be created
+	noOfSpheres- the total number of sphere particles that should be created
+	position- the spawn position of the generator
+	minColour- the minimum boundary of the colour range
+	maxColour- the maximum boundary of the colour range
+	*/
 	initialiseInteracting(noOfCylinders, noOfSpheres, position, minColour, maxColour)
 	{
 		var tempArray=[];
@@ -473,7 +517,7 @@ class InteractingParticleA{
 		if(this._isActive){
 			for(var i=0;i<this._generator.noOfParticles;i++){
 				switch(this._generator.particleArray[i].meshType){
-					case "vertical":
+					case "vertical":		//rising particles
 						if(this._generator.particleArray[i].lifetime<=0){
 							this._generator.particleArray[i].mesh.position.y = this._generator.position.y;
 							this._generator.particleArray[i].lifetime = this._generator.particleArray[i].maxLifetime;
@@ -483,7 +527,7 @@ class InteractingParticleA{
 						this._generator.particleArray[i].lifetime -= 0.1;
 						break;
 						
-					case "ground":
+					case "ground":		//particles that remain on the ground
 						if(this._generator.particleArray[i].mesh.scale.x<=0){
 							this._generator.particleArray[i].mesh.scale.set(1,1,1);
 						}
@@ -534,7 +578,10 @@ class Helix{
 	set isActive(active){
 		this._isActive = active;
 	}
-	
+	/*create a particle generator with created particles
+	noOfParticles- the total number of particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseInteracting(noOfParticles, position)
 	{
 		var tempArray=[];
@@ -638,7 +685,10 @@ class CylindricalSparkles{
 	set isActive(active){
 		this._isActive = active;
 	}
-	
+	/*create a particle generator with created particles
+	noOfParticles- the total number of particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseInteracting(noOfParticles, position)
 	{
 		var tempArray=[];
@@ -715,7 +765,12 @@ class Beam{
 	set isActive(active){
 		this._isActive = active;
 	}
-	
+	/*create a particle generator with created particles
+	noOfBeams- the total number of beam particles that should be created
+	noOfOrbs- the total number of orb particles that should be created
+	noOfToruses- the total number of torus particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseInteracting(noOfBeams, noOfOrbs, noOfToruses, position)
 	{
 		var tempArray=[];
@@ -861,7 +916,10 @@ class Breeze{
 	set isActive(active){
 		this._isActive = active;
 	}
-	
+	/*create a particle generator with created particles
+	noOfParticles- the total number of particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseInteracting(noOfParticles, position)
 	{
 		var tempArray=[];
@@ -976,7 +1034,10 @@ class Sparkles{
 	set isActive(active){
 		this._isActive = active;
 	}
-	
+	/*create a particle generator with created particles
+	noOfParticles- the total number of particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseSparkles(noOfParticles, position){
 		var tempArray = [];
 		
@@ -988,7 +1049,7 @@ class Sparkles{
 			var particle = particleSystem.makeParticle(sparkleMesh, Math.random()*5+2, new THREE.Vector3(Math.random()*0.06-0.03,Math.random()*0.06-0.03,Math.random()*0.06-0.03), new THREE.Vector3(0,Math.random()*0.1+0.01,0));
 			tempArray.push(particle);
 			//set random position around the given position
-			tempArray[i].mesh.position.set(position.x+Math.random()*8-4,position.y+Math.random()*8,position.z+Math.random()*8-4);
+			tempArray[i].mesh.position.set(position.x+Math.random()*100-50,position.y+Math.random()*25,position.z+Math.random()*100-50); //*8(-4)
 			scene.add(tempArray[i].mesh);
 		}
 		
@@ -1037,7 +1098,10 @@ class SparkExplosion{
 	set isActive(active){
 		this._isActive = active;
 	}
-	
+	/*create a particle generator with created particles
+	noOfParticles- the total number of particles that should be created
+	position- the spawn position of the generator
+	*/
 	initialiseSparkExplosion(noOfParticles, position){
 		var tempArray = [];
 		

@@ -122,7 +122,7 @@ function onActiveMeshSetActive(objectInstance)
 {
 	// .. add your code here
 	//particle setup
-	var prng = Math.floor(Math.random()*5);
+	var prng = Math.floor(Math.random()*4);
 	switch(prng){
 		case 0:
 			activeParticle = new InteractingParticleA();
@@ -138,21 +138,15 @@ function onActiveMeshSetActive(objectInstance)
 			
 		case 2:
 			activeParticle = new CylindricalSparkles(1);
-			activeParticle.initialiseInteracting(100,activeObjectData.startPosition);
+			activeParticle.initialiseInteracting(75,activeObjectData.startPosition);
 			activeParticle.particleInteracting();
 			break;
 			
 		case 3:
+		default:
 			activeParticle = new Beam(1);
 			activeParticle.initialiseInteracting(7,10,4, activeObjectData.startPosition);
 			activeParticle.particleInteracting();
-			break;
-		
-		case 4:
-		default:
-			activeParticle = new Sparkles();
-			activeParticle.initialiseSparkles(60,activeObjectData.startPosition);
-			activeParticle.particleSparkles();
 			break;
 	}
 	
