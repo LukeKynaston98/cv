@@ -57,7 +57,7 @@ canvas {
 	height: 100%
 }
 
-@media screen and (max-width: 900px){
+@media screen and (max-width: 1000px){
 	#tutorial{
 		background-color: #f00;
 	}
