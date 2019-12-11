@@ -57,7 +57,7 @@ canvas {
 	height: 100%
 }
 
-@meida screen and (max-width: 768px){
+@media screen and (max-width: 768px){
 	#tutorial{
 		background-color: #f00;
 	}
