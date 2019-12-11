@@ -196,7 +196,8 @@ function onMouseMove(event)
 
 function update()
 {
-	raycaster.setFromCamera(mouse, camera);
+	//raycaster.setFromCamera(mouse, camera);
+	raycaster.set(camera.getWorldPosition(), camera.getWorldDirection());
 	var intersects = raycaster.intersectObjects(scene.children);
 	
 	// Check for mouse hovering over active target
