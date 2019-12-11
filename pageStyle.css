@@ -13,9 +13,11 @@
 }
 
 #crosshair{
-	width: 5%;
+	width: 100%;
 	display:block;
 	margin:auto;
+	position: absolute;
+	text-align: center;
 }
 
 body {
