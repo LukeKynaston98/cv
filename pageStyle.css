@@ -18,6 +18,7 @@
 	margin:auto;
 	position: absolute;
 	text-align: center;
+	z-index: 100;
 }
 
 body {
